@@ -15,6 +15,7 @@ build/
 pipeline_data/
 pipeline_data_demo/
 tracer_data/
+docs/
 apps/desktop/src-tauri/target/
 apps/desktop/src-tauri/gen/
 *.log
