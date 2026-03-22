@@ -145,3 +145,11 @@ rocq_home = ""
 [integration]
 certification_frequency = "on_request"
 http_api_port = 8321
+
+[integration.safeslice]
+enabled = false
+src_path = ""
+relation_types = ["depends_on", "decomposes_into", "refines", "specializes"]
+include_baseline_slice = true
+include_scope_conditions_in_context = true
+include_semantics_guard_in_context = true

@@ -265,6 +265,14 @@ async def cmd_claim_analyze(args: argparse.Namespace) -> dict[str, Any]:
     return {"claim_analysis": result.model_dump(mode="json", exclude_none=True)}
 
 
+def cmd_claim_slice_task(args: argparse.Namespace) -> dict[str, Any]:
+    result = _api(args).export_safe_slice_task(
+        args.project_id,
+        claim_ids=list(args.claim_id or []),
+    )
+    return {"safe_slice_task": result.model_dump(mode="json", exclude_none=True)}
+
+
 async def cmd_formalize_dual(args: argparse.Namespace) -> dict[str, Any]:
     result = await _api(args).run_dual_formalization(args.project_id, args.claim_id)
     return {"dual_formalization": result.model_dump(mode="json", exclude_none=True)}
@@ -566,6 +574,19 @@ def build_parser() -> argparse.ArgumentParser:
     claim_analyze.add_argument("--claim-id", required=True)
     claim_analyze.add_argument("--output")
     claim_analyze.set_defaults(func=cmd_claim_analyze)
+
+    claim_slice_task = claim_sub.add_parser(
+        "slice-task",
+        help="Export an optional safeslice task from the current ClaimGraph.",
+    )
+    claim_slice_task.add_argument("--project-id", required=True)
+    claim_slice_task.add_argument(
+        "--claim-id",
+        action="append",
+        help="Optional target claim id. Repeat to export multiple target chains. Defaults to root_claim_ids.",
+    )
+    claim_slice_task.add_argument("--output")
+    claim_slice_task.set_defaults(func=cmd_claim_slice_task)
 
     formalize = root.add_parser("formalize", help="Run explicit formalization workflows.")
     formalize_sub = formalize.add_subparsers(dest="formalize_command")

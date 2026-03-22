@@ -56,6 +56,13 @@ one vertical. The project optimizes for orchestration leverage and reusable
 workflow boundaries across domains, because it was created to be used as an
 orchestration engine first.
 
+With optional `safeslice` integration enabled, the stack can also export claim
+decompositions into a benchmark-grounded statistical robustness analysis. In
+engineering terms, that means theorem claims, legal claims, policy claims, and
+other natural-language decomposition outputs can be checked for baseline
+alignment, witness cliffs, and clarification bottlenecks against explicit
+ground-truth task families rather than being treated as untestable prose.
+
 ## Current Boundaries
 
 - `apps/cli/`: operator-facing CLI over `FormalClaimEngineAPI`
@@ -117,6 +124,7 @@ Current configuration surfaces include:
 - proof backend transport settings and proof-job budgets
 - proof-assistant host/port settings
 - certification HTTP port
+- optional `safeslice` integration settings for claim-decomposition export
 
 The file comments document the env-var override convention:
 
@@ -148,6 +156,7 @@ The current command groups are:
 - `reference list|show|links|backlinks`
 - `evidence list|show|links`
 - `claim structure|analyze`
+- `claim slice-task`
 - `formalize dual`
 - `audit run`
 - `profile recompute`
@@ -171,6 +180,22 @@ python scripts/dev/run_uv.py run --directory apps/cli formal-claim reference lis
 
 That flow exercises the source-mapping and external-reference path in the
 engine.
+
+### Example: Export An Optional SafeSlice Task
+
+```powershell
+python scripts/dev/run_uv.py run --directory apps/cli formal-claim claim slice-task --project-id <project_id> --format json
+```
+
+This command is gated by `[integration.safeslice]` in
+`settings/verification.toml` and exports a `ClaimGraph -> safeslice TaskSpec`
+mapping without changing the default audit/promotion workflow.
+
+That matters because it gives the engine an optional way to say not only
+"here is the decomposition" but also "here is an engineering-style statistical
+certificate for whether that decomposition stays robust against a benchmarked
+ground-truth task family". That interpretation extends beyond theorem workflows
+to legal and other natural-language claim settings.
 
 ### Example: Structure And Audit A Formal Claim
 

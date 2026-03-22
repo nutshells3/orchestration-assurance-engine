@@ -31,6 +31,7 @@ from .engine_api import (
     FormalClaimEngineAPI,
     ProfileRecomputeResult,
     ProjectBundleExport,
+    SafeSliceTaskExportResult,
 )
 from .llm_client import LLMClient
 from .models import AssuranceGraph, AssuranceProfile, ClaimGraph, Gate
@@ -87,6 +88,7 @@ __all__ = [
     "PromotionStateMachine",
     "ProfileRecomputeResult",
     "ProjectBundleExport",
+    "SafeSliceTaskExportResult",
     "ReviewActorRole",
     "project_downstream_policy",
     "LLMClient",

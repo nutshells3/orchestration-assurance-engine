@@ -82,6 +82,23 @@ class SessionOverrideConfig:
 
 
 @dataclass
+class SafeSliceConfig:
+    enabled: bool = False
+    src_path: str = ""
+    relation_types: list[str] = field(
+        default_factory=lambda: [
+            "depends_on",
+            "decomposes_into",
+            "refines",
+            "specializes",
+        ]
+    )
+    include_baseline_slice: bool = True
+    include_scope_conditions_in_context: bool = True
+    include_semantics_guard_in_context: bool = True
+
+
+@dataclass
 class UnifiedConfig:
     # LLM
     llm_defaults: dict[str, Any]
@@ -102,6 +119,7 @@ class UnifiedConfig:
     # Integration
     certification_frequency: str = "on_request"
     http_api_port: int = 8321
+    safe_slice: SafeSliceConfig = field(default_factory=SafeSliceConfig)
     # Data
     data_dir: str = "./pipeline_data"
 
@@ -253,6 +271,30 @@ def _build_session_override(d: dict[str, Any]) -> SessionOverrideConfig:
     )
 
 
+def _build_safe_slice(d: dict[str, Any]) -> SafeSliceConfig:
+    return SafeSliceConfig(
+        enabled=bool(d.get("enabled", False)),
+        src_path=str(d.get("src_path", "")),
+        relation_types=[
+            str(item)
+            for item in list(
+                d.get(
+                    "relation_types",
+                    ["depends_on", "decomposes_into", "refines", "specializes"],
+                )
+                or []
+            )
+        ],
+        include_baseline_slice=bool(d.get("include_baseline_slice", True)),
+        include_scope_conditions_in_context=bool(
+            d.get("include_scope_conditions_in_context", True)
+        ),
+        include_semantics_guard_in_context=bool(
+            d.get("include_semantics_guard_in_context", True)
+        ),
+    )
+
+
 # ---------------------------------------------------------------------------
 # Main loader
 # ---------------------------------------------------------------------------
@@ -316,6 +358,7 @@ def load_config(path: Path | None = None) -> UnifiedConfig:
         http_api_port=int(
             raw.get("integration", {}).get("http_api_port", 8321)
         ),
+        safe_slice=_build_safe_slice(raw.get("integration", {}).get("safeslice", {})),
         data_dir=str(stack.get("data_dir", "./pipeline_data")),
     )
 

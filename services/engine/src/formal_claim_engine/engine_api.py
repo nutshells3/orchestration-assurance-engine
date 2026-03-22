@@ -16,6 +16,7 @@ from .unified_config import load_config as _load_unified_config, to_pipeline_con
 from .models import AssuranceProfile, ClaimGraph, Gate
 from .orchestrator import PipelineOrchestrator
 from .promotion_state_machine import PromotionCheckpointState, ReviewActorRole
+from .safe_slice_optional import build_safeslice_task_payload
 from .store import ArtifactStore, canonical_artifact_id
 
 OrchestratorFactory = Callable[[PipelineConfig, LLMClient, ArtifactStore], PipelineOrchestrator]
@@ -118,6 +119,14 @@ class BatchFormalizationRunResult(BaseModel):
     project_id: str
     claim_ids: list[str] = Field(default_factory=list)
     results: list[BatchClaimFormalizationResult] = Field(default_factory=list)
+
+
+class SafeSliceTaskExportResult(BaseModel):
+    project_id: str
+    target_claim_ids: list[str] = Field(default_factory=list)
+    task: dict[str, Any] = Field(default_factory=dict)
+    availability: dict[str, Any] = Field(default_factory=dict)
+    review_events: list[dict[str, Any]] = Field(default_factory=list)
 
 
 class ProjectBundleExport(BaseModel):
@@ -852,6 +861,83 @@ class FormalClaimEngineAPI:
             promotion_states=promotion_states,
         )
 
+    def export_safe_slice_task(
+        self,
+        project_id: str,
+        *,
+        claim_ids: list[str] | None = None,
+        thresholds: dict[str, Any] | None = None,
+        ambiguity: dict[str, Any] | None = None,
+    ) -> SafeSliceTaskExportResult:
+        try:
+            unified = _load_unified_config()
+            safe_slice_cfg = unified.safe_slice
+        except FileNotFoundError:
+            safe_slice_cfg = None
+
+        if safe_slice_cfg is None or not safe_slice_cfg.enabled:
+            raise ValueError(
+                "SafeSlice integration is disabled. "
+                "Enable [integration.safeslice] in settings/verification.toml."
+            )
+
+        claim_graph = self._load_claim_graph(project_id).model_dump(
+            mode="json",
+            exclude_none=True,
+        )
+        payload = build_safeslice_task_payload(
+            claim_graph,
+            target_claim_ids=claim_ids,
+            thresholds=thresholds,
+            ambiguity=ambiguity,
+            adapter_config={
+                "relation_types": list(safe_slice_cfg.relation_types),
+                "include_baseline_slice": safe_slice_cfg.include_baseline_slice,
+                "include_scope_conditions_in_context": safe_slice_cfg.include_scope_conditions_in_context,
+                "include_semantics_guard_in_context": safe_slice_cfg.include_semantics_guard_in_context,
+            },
+            src_path_override=safe_slice_cfg.src_path or None,
+        )
+        task = dict(payload.get("task") or {})
+        target_claim_ids = [
+            str(item)
+            for item in list(claim_ids or [])
+            if str(item)
+        ]
+        if not target_claim_ids:
+            target_claim_ids = [
+                canonical_artifact_id(chain.get("metadata", {}).get("target_claim_id") or "")
+                for chain in list(task.get("chains") or [])
+                if chain.get("metadata", {}).get("target_claim_id")
+            ]
+
+        review_events: list[dict[str, Any]] = []
+        for target_claim_id in target_claim_ids:
+            review_events.append(
+                self.claim_trace_service.repository.artifact_store.append_review_event(
+                    target_claim_id=target_claim_id,
+                    artifact_kind="safe_slice_task",
+                    artifact_id=f"safeslice.task.{canonical_artifact_id(target_claim_id)}",
+                    event_type="safe_slice_task_export",
+                    actor="engine_api",
+                    actor_role="system",
+                    notes="Exported optional safeslice task from the current ClaimGraph.",
+                    metadata={
+                        "analysis_mode": "safe_slice_task_export",
+                        "task_id": task.get("task_id"),
+                        "availability": dict(payload.get("availability") or {}),
+                    },
+                )
+            )
+
+        return SafeSliceTaskExportResult(
+            project_id=project_id,
+            target_claim_ids=target_claim_ids,
+            task=task,
+            availability=dict(payload.get("availability") or {}),
+            review_events=review_events,
+        )
+
     def _best_effort_claim_analysis(
         self,
         project_id: str,
@@ -1156,4 +1242,5 @@ __all__ = [
     "FormalClaimEngineAPI",
     "ProfileRecomputeResult",
     "ProjectBundleExport",
+    "SafeSliceTaskExportResult",
 ]
