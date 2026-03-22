@@ -1,0 +1,13 @@
+{
+  "session_name": "Fixture_Suspicious",
+  "cleanup_on_close": true,
+  "theories": [
+    {
+      "theory_name": "Suspicious_Model",
+      "imports": [
+        "Main"
+      ],
+      "body": "lemma suspicious_claim:\n  assumes KEEP_PREMISE: \"finite drivers\"\n  shows \"True\"\n  using KEEP_PREMISE\n  by simp"
+    }
+  ]
+}

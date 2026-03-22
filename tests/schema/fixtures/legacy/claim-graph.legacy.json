@@ -1,0 +1,59 @@
+{
+  "schema_version": "0.9.0",
+  "graph_id": "cg.dispatch.legacy",
+  "project_id": "project.agent_ide",
+  "created_at": "2026-02-15T00:00:00Z",
+  "updated_at": "2026-02-15T00:00:00Z",
+  "description": "Legacy sample reserved for M1-04 migration adapter tests.",
+  "claims": [
+    {
+      "claim_id": "claim.dispatch.legacy_root",
+      "title": "Legacy convergence claim",
+      "nl_statement": "Legacy sample for migration tests.",
+      "claim_class": "core_claim",
+      "claim_kind": "theorem_candidate",
+      "status": "candidate",
+      "formalization_required": true,
+      "downstream_kind": "research_then_dev",
+      "scope": {
+        "domain": "legacy dispatch systems",
+        "modality": "universal",
+        "included_conditions": [],
+        "excluded_conditions": []
+      },
+      "semantics_guard": {
+        "must_preserve": [
+          "legacy semantics"
+        ],
+        "allowed_weakenings": [],
+        "forbidden_weakenings": [],
+        "forbidden_strengthenings": [],
+        "backtranslation_required": true,
+        "independent_formalizations_required": 1
+      },
+      "policy": {
+        "allowed_assumption_carriers": [
+          "premise"
+        ],
+        "global_axiom_allowed": false,
+        "sorry_allowed_in_scratch": true,
+        "sorry_allowed_in_mainline": false
+      },
+      "provenance": {
+        "created_by_role": "planner",
+        "source_anchors": [
+          {
+            "source_type": "planner_note",
+            "source_ref": "legacy:dispatch",
+            "excerpt": "Legacy sample retained for migration testing."
+          }
+        ]
+      },
+      "owner_role": "planner",
+      "reviewer_roles": [
+        "human_reviewer"
+      ]
+    }
+  ],
+  "relations": []
+}

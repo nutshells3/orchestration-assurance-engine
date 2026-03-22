@@ -1,0 +1,12 @@
+{
+  "name": "@formal-claim/contracts",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Canonical JSON Schema contracts for the Formal Claim Workbench.",
+  "files": [
+    "schemas"
+  ],
+  "scripts": {
+    "lint": "node -e \"const fs=require('fs'); ['claim-graph','assurance-graph','assurance-profile'].forEach(name=>JSON.parse(fs.readFileSync(`schemas/${name}.schema.json`, 'utf8')));\""
+  }
+}

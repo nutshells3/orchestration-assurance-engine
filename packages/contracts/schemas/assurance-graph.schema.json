@@ -1,0 +1,493 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/assurance-graph.schema.json",
+  "title": "AssuranceGraph",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "graph_id",
+    "project_id",
+    "created_at",
+    "updated_at",
+    "nodes",
+    "edges"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "graph_id": {
+      "$ref": "#/$defs/id"
+    },
+    "project_id": {
+      "$ref": "#/$defs/id"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "description": {
+      "type": "string"
+    },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/node"
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/edge"
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:-]+$"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "planner",
+        "claim_graph_agent",
+        "formalizer",
+        "research",
+        "dev",
+        "policy_engine",
+        "human_reviewer",
+        "system"
+      ]
+    },
+    "nodeStatus": {
+      "type": "string",
+      "enum": [
+        "active",
+        "provisional",
+        "approved",
+        "failed",
+        "obsolete",
+        "rejected"
+      ]
+    },
+    "claimNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "node_id",
+        "node_type",
+        "title",
+        "claim_ref",
+        "status"
+      ],
+      "properties": {
+        "node_id": {
+          "$ref": "#/$defs/id"
+        },
+        "node_type": {
+          "const": "claim"
+        },
+        "title": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "claim_ref": {
+          "$ref": "#/$defs/id"
+        },
+        "status": {
+          "$ref": "#/$defs/nodeStatus"
+        }
+      }
+    },
+    "formalArtifactNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "node_id",
+        "node_type",
+        "title",
+        "system",
+        "artifact_kind",
+        "identifier",
+        "status",
+        "proof_status"
+      ],
+      "properties": {
+        "node_id": {
+          "$ref": "#/$defs/id"
+        },
+        "node_type": {
+          "const": "formal_artifact"
+        },
+        "title": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "system": {
+          "type": "string",
+          "enum": [
+            "isabelle_hol",
+            "lean",
+            "coq",
+            "agda",
+            "other"
+          ]
+        },
+        "artifact_kind": {
+          "type": "string",
+          "enum": [
+            "theorem",
+            "lemma",
+            "definition",
+            "locale",
+            "interpretation",
+            "theory",
+            "session_build",
+            "export_bundle",
+            "generated_code",
+            "other"
+          ]
+        },
+        "identifier": {
+          "type": "string"
+        },
+        "session": {
+          "type": "string"
+        },
+        "theory": {
+          "type": "string"
+        },
+        "file_path": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/nodeStatus"
+        },
+        "proof_status": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "built",
+            "proof_complete",
+            "build_failed",
+            "obsolete"
+          ]
+        }
+      }
+    },
+    "evidenceNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "node_id",
+        "node_type",
+        "title",
+        "evidence_kind",
+        "result_polarity",
+        "status"
+      ],
+      "properties": {
+        "node_id": {
+          "$ref": "#/$defs/id"
+        },
+        "node_type": {
+          "const": "evidence"
+        },
+        "title": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "evidence_kind": {
+          "type": "string",
+          "enum": [
+            "experiment",
+            "literature",
+            "simulation",
+            "benchmark",
+            "test_run",
+            "countermodel",
+            "static_analysis",
+            "runtime_observation",
+            "manual_review",
+            "bug_report",
+            "other"
+          ]
+        },
+        "result_polarity": {
+          "type": "string",
+          "enum": [
+            "supports",
+            "challenges",
+            "refutes",
+            "mixed",
+            "neutral"
+          ]
+        },
+        "artifact_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "status": {
+          "$ref": "#/$defs/nodeStatus"
+        }
+      }
+    },
+    "assumptionSetNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "node_id",
+        "node_type",
+        "title",
+        "scope_kind",
+        "items",
+        "approved",
+        "status"
+      ],
+      "properties": {
+        "node_id": {
+          "$ref": "#/$defs/id"
+        },
+        "node_type": {
+          "const": "assumption_set"
+        },
+        "title": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "scope_kind": {
+          "type": "string",
+          "enum": [
+            "premise",
+            "locale",
+            "global_axiom",
+            "environment_contract"
+          ]
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "approved": {
+          "type": "boolean"
+        },
+        "status": {
+          "$ref": "#/$defs/nodeStatus"
+        }
+      }
+    },
+    "contractNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "node_id",
+        "node_type",
+        "title",
+        "contract_kind",
+        "owner_role",
+        "status",
+        "acceptance_conditions"
+      ],
+      "properties": {
+        "node_id": {
+          "$ref": "#/$defs/id"
+        },
+        "node_type": {
+          "const": "contract"
+        },
+        "title": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "contract_kind": {
+          "type": "string",
+          "enum": [
+            "implementation_contract",
+            "research_task",
+            "test_obligation",
+            "runtime_guard",
+            "release_gate",
+            "review_obligation",
+            "other"
+          ]
+        },
+        "owner_role": {
+          "$ref": "#/$defs/role"
+        },
+        "status": {
+          "$ref": "#/$defs/nodeStatus"
+        },
+        "acceptance_conditions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "reviewNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "node_id",
+        "node_type",
+        "title",
+        "review_kind",
+        "reviewer_role",
+        "outcome",
+        "status"
+      ],
+      "properties": {
+        "node_id": {
+          "$ref": "#/$defs/id"
+        },
+        "node_type": {
+          "const": "review"
+        },
+        "title": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "review_kind": {
+          "type": "string",
+          "enum": [
+            "backtranslation",
+            "intent_alignment",
+            "formal_review",
+            "evidence_review",
+            "safety_review",
+            "release_review",
+            "other"
+          ]
+        },
+        "reviewer_role": {
+          "$ref": "#/$defs/role"
+        },
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "fail",
+            "needs_revision",
+            "disputed"
+          ]
+        },
+        "status": {
+          "$ref": "#/$defs/nodeStatus"
+        }
+      }
+    },
+    "node": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/claimNode"
+        },
+        {
+          "$ref": "#/$defs/formalArtifactNode"
+        },
+        {
+          "$ref": "#/$defs/evidenceNode"
+        },
+        {
+          "$ref": "#/$defs/assumptionSetNode"
+        },
+        {
+          "$ref": "#/$defs/contractNode"
+        },
+        {
+          "$ref": "#/$defs/reviewNode"
+        }
+      ]
+    },
+    "edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "edge_id",
+        "source_id",
+        "target_id",
+        "relation_type",
+        "status"
+      ],
+      "properties": {
+        "edge_id": {
+          "$ref": "#/$defs/id"
+        },
+        "source_id": {
+          "$ref": "#/$defs/id"
+        },
+        "target_id": {
+          "$ref": "#/$defs/id"
+        },
+        "relation_type": {
+          "type": "string",
+          "enum": [
+            "formalizes",
+            "backtranslates_to",
+            "depends_on",
+            "scoped_by",
+            "supports",
+            "challenges",
+            "refutes",
+            "reviews",
+            "derived_from",
+            "implements",
+            "tests",
+            "gates",
+            "supersedes",
+            "generated_from",
+            "equivalent_to"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "provisional",
+            "rejected",
+            "superseded",
+            "archived"
+          ]
+        },
+        "rationale": {
+          "type": "string"
+        },
+        "strength": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        }
+      }
+    }
+  }
+}

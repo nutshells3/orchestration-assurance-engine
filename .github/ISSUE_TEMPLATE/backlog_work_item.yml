@@ -1,0 +1,67 @@
+name: Backlog Work Item
+description: Open a tracked work item aligned with the backlog waves and execution modes.
+title: "[Backlog] "
+labels:
+  - governance
+body:
+  - type: input
+    id: backlog_id
+    attributes:
+      label: Backlog ID
+      description: Use the canonical backlog ID when this issue corresponds to a CSV row.
+      placeholder: M0-02
+    validations:
+      required: true
+  - type: dropdown
+    id: wave
+    attributes:
+      label: Wave
+      options:
+        - foundation
+        - migration
+        - core-runner-base
+        - core-runner-advanced
+        - workflow-mcp-cli
+        - productization
+    validations:
+      required: true
+  - type: dropdown
+    id: execution_mode
+    attributes:
+      label: Execution mode
+      options:
+        - bootstrap
+        - normalize
+        - extract
+        - absorb
+        - replace
+        - implement
+    validations:
+      required: true
+  - type: input
+    id: paths
+    attributes:
+      label: Package or path
+      placeholder: services/engine
+    validations:
+      required: true
+  - type: textarea
+    id: prototype_basis
+    attributes:
+      label: Prototype basis or donor code
+      description: Record any existing donor package, wrapper, or prototype that this work must absorb or replace.
+      placeholder: services/engine/src/formal_claim_engine/proof_protocol.py
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: State the concrete work to do in canonical package terms.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Use deterministic, testable completion criteria.
+    validations:
+      required: true

@@ -1,0 +1,14 @@
+{
+  "name": "@formal-claim/workbench",
+  "private": true,
+  "packageManager": "pnpm@10.32.1",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "bootstrap": "python scripts/dev/bootstrap.py",
+    "contracts:generate": "python -m uv run --python 3.12 --group dev python scripts/contracts/generate_bindings.py",
+    "test": "python scripts/dev/check_repo.py --mode test",
+    "lint": "python scripts/dev/check_repo.py --mode lint"
+  }
+}

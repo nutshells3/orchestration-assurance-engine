@@ -1,0 +1,13 @@
+{
+  "session_name": "Fixture_Sorry",
+  "cleanup_on_close": true,
+  "theories": [
+    {
+      "theory_name": "Sorry_Model",
+      "imports": [
+        "Main"
+      ],
+      "body": "lemma incomplete_claim: \"True\"\n  sorry"
+    }
+  ]
+}

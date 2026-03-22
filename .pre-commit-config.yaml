@@ -1,0 +1,8 @@
+repos:
+  - repo: local
+    hooks:
+      - id: formal-claim-root-lint
+        name: formal-claim root lint
+        entry: python scripts/dev/check_repo.py --mode lint
+        language: system
+        pass_filenames: false

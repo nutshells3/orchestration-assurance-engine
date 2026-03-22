@@ -1,0 +1,138 @@
+{
+  "schema_version": "1.0.0",
+  "profile_id": "profile.dispatch.driver_assignment_converges",
+  "project_id": "project.agent_ide",
+  "created_at": "2026-03-20T00:00:00Z",
+  "updated_at": "2026-03-20T00:00:00Z",
+  "claim_id": "claim.dispatch.driver_assignment_converges",
+  "claim_graph_ref": "cg.dispatch",
+  "assurance_graph_ref": "ag.dispatch",
+  "target_formal_artifact": {
+    "artifact_id": "node.formal.dispatch.driver_assignment_converges",
+    "system": "isabelle_hol",
+    "session": "Dispatch",
+    "theory": "Dispatch_Model_A",
+    "theorem": "driver_assignment_converges"
+  },
+  "formal_status": "proof_complete",
+  "support_status": "simulation_supported",
+  "intent_status": "aligned",
+  "gate": "certified",
+  "decision_rationale": "The theorem is proof-complete, carries no global axioms or oracles, passed back-translation review, and remains explicitly scoped by reviewed locale assumptions.",
+  "trust_frontier": {
+    "global_axiom_dependency_count": 0,
+    "locale_assumption_count": 3,
+    "premise_assumption_count": 0,
+    "oracle_dependency_count": 0,
+    "unreviewed_import_count": 0,
+    "transitive_dependency_count": 14,
+    "reviewed_global_axiom_ids": [],
+    "oracle_ids": [],
+    "hotspot_artifact_ids": [
+      "node.formal.dispatch.dispatch_context"
+    ],
+    "notes": [
+      "All assumptions are locale-scoped rather than global.",
+      "No oracle footprint was detected."
+    ]
+  },
+  "conservativity": {
+    "definitional_only": true,
+    "reviewed_global_axioms_required": false,
+    "compile_away_known": true,
+    "nondefinitional_hotspots": [],
+    "trusted_mechanisms": [
+      "definition",
+      "fun",
+      "locale",
+      "theorem"
+    ],
+    "flagged_mechanisms": []
+  },
+  "obligations": {
+    "sorry_count": 0,
+    "oops_count": 0,
+    "open_goal_count": 0,
+    "unresolved_bridge_count": 0,
+    "missing_backtranslation_review_count": 0,
+    "blocking_obligations": []
+  },
+  "model_health": {
+    "locale_satisfiability": "pass",
+    "countermodel_probe": "no_countermodel_found",
+    "vacuity_check": "pass",
+    "premise_sensitivity": "stable",
+    "conclusion_perturbation": "stable",
+    "notes": [
+      "No small countermodel found under the checked search budget."
+    ]
+  },
+  "intent_alignment": {
+    "independent_formalization_count": 2,
+    "agreement_score": 0.91,
+    "backtranslation_review": "pass",
+    "paraphrase_robustness_score": 0.84,
+    "semantics_guard_violations": [],
+    "reviewer_notes": [
+      "Both formalizers preserved finite-time convergence rather than weakening it to empirical convergence."
+    ]
+  },
+  "coverage": {
+    "formalized_subclaim_count": 3,
+    "residual_subclaim_count": 0,
+    "dependency_coverage_score": 1.0,
+    "evidence_link_coverage_score": 0.67,
+    "required_claim_ids": [
+      "claim.dispatch.dispatch_model_defined",
+      "claim.dispatch.matching_step_wellformed",
+      "claim.dispatch.finite_decrease_measure"
+    ],
+    "uncovered_claim_ids": []
+  },
+  "robustness": {
+    "linter_finding_count": 1,
+    "replay_status": "pass",
+    "rebuild_count": 3,
+    "reproducibility_score": 0.96,
+    "cross_tool_review_status": "not_applicable",
+    "notes": [
+      "Single non-blocking linter finding concerns theorem naming style only."
+    ]
+  },
+  "support_profile": {
+    "evidence_counts": {
+      "experiment": 0,
+      "literature": 0,
+      "simulation": 1,
+      "test_run": 0,
+      "countermodel": 0,
+      "manual_review": 1
+    },
+    "strongest_positive_evidence_ids": [
+      "node.evidence.simulation.convergence_10000",
+      "node.review.backtranslation.driver_assignment_converges"
+    ],
+    "strongest_negative_evidence_ids": [],
+    "bridge_notes": [
+      "Simulation supports the claim's intended interpretation but does not affect proof completeness."
+    ]
+  },
+  "vector_scores": {
+    "trust_base_integrity": 94,
+    "intent_alignment": 90,
+    "evidence_support": 68,
+    "coverage": 100,
+    "robustness": 92,
+    "scheduler_score": 89
+  },
+  "allowed_downstream": [
+    "research",
+    "dev",
+    "monitoring"
+  ],
+  "required_actions": [
+    "Recompute this profile if the dispatch locale assumptions change.",
+    "Keep the runtime guard active when using the theorem in engineering contracts."
+  ],
+  "expires_at": "2026-06-20T00:00:00Z"
+}

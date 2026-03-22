@@ -1,0 +1,52 @@
+# Canonical GitHub repo: github.com/nutshells3/proof-claim
+# Current concrete GitHub principal: @nutshells3
+# Backlog owner lanes are preserved in comments so these mappings can be split
+# into dedicated teams later without changing the package boundaries.
+
+# Default owner
+* @nutshells3
+
+# Governance / Tech Lead lane
+/.github/ @nutshells3
+/docs/ @nutshells3
+/scripts/github/ @nutshells3
+
+# DevEx lane
+/justfile @nutshells3
+/package.json @nutshells3
+/pnpm-workspace.yaml @nutshells3
+/pnpm-lock.yaml @nutshells3
+/pyproject.toml @nutshells3
+/uv.lock @nutshells3
+/scripts/dev/ @nutshells3
+/apps/cli/ @nutshells3
+
+# Contracts / Policy lane
+/packages/contracts/ @nutshells3
+/packages/contracts-py/ @nutshells3
+/docs/policies/ @nutshells3
+
+# Backend lane
+/services/engine/ @nutshells3
+/packages/graph-model/ @nutshells3
+/packages/audit-rules/ @nutshells3
+/tests/schema/ @nutshells3
+/tests/audit/ @nutshells3
+
+# Proof boundary lane
+/integrations/isabelle/ @nutshells3
+/examples/theorem-audit/ @nutshells3
+/tests/integration/ @nutshells3
+
+# Platform / MCP lane
+/services/mcp-server/ @nutshells3
+
+# Research / Evidence lane
+/packages/evidence-connectors/ @nutshells3
+/integrations/assurance/ @nutshells3
+/examples/paper-claim/ @nutshells3
+/examples/legal-claim/ @nutshells3
+
+# QA lane
+/tests/e2e/ @nutshells3
+/examples/toy-claim/ @nutshells3

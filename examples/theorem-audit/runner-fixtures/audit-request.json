@@ -1,0 +1,45 @@
+{
+  "session_name": "Dispatch",
+  "session_dir": "__SESSION_DIR__",
+  "target_theory": "Dispatch_Model_A",
+  "target_theorem": "driver_assignment_converges",
+  "reviewed_global_axiom_ids": [
+    "axiom.choice"
+  ],
+  "reviewed_exception_ids": [
+    "review.exception.dispatch_context"
+  ],
+  "nitpick": {
+    "session_name": "Dispatch",
+    "session_dir": "__SESSION_DIR__",
+    "target_theory": "Dispatch_Model_A",
+    "target_theorem": "driver_assignment_converges",
+    "probe_statement": "True"
+  },
+  "sledgehammer": {
+    "session_name": "Dispatch",
+    "session_dir": "__SESSION_DIR__",
+    "target_theory": "Dispatch_Model_A",
+    "target_theorem": "driver_assignment_converges",
+    "probe_statement": "True"
+  },
+  "robustness_harness": {
+    "session_name": "Dispatch",
+    "target_theory": "Dispatch_Model_A",
+    "target_theorem": "driver_assignment_converges",
+    "base_theory_body": "lemma driver_assignment_converges:\n  assumes KEEP_PREMISE: \"finite drivers\"\n  shows \"True\"\n  using KEEP_PREMISE\n  by simp",
+    "premise_variants": [
+      {
+        "label": "drop guard",
+        "marker": "assumes KEEP_PREMISE: \"finite drivers\"\n"
+      }
+    ],
+    "conclusion_variants": [
+      {
+        "label": "strengthen goal",
+        "old_text": "\"True\"",
+        "new_text": "\"False\""
+      }
+    ]
+  }
+}

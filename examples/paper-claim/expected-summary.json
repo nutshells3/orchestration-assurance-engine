@@ -1,0 +1,13 @@
+{
+  "scenario_id": "paper-claim",
+  "domain": "academic",
+  "target_claim_id": "claim.paper.guardrails_reduce_review_latency",
+  "source_document_kind": "local_file",
+  "minimum_claim_count": 3,
+  "minimum_reference_count": 1,
+  "minimum_assurance_link_count": 1,
+  "minimum_evaluation_evidence_count": 1,
+  "minimum_claim_evidence_link_count": 1,
+  "minimum_reference_evidence_link_count": 1,
+  "final_promotion_gate": "research_only"
+}

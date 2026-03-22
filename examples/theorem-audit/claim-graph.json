@@ -1,0 +1,340 @@
+{
+  "schema_version": "1.0.0",
+  "graph_id": "cg.dispatch",
+  "project_id": "project.agent_ide",
+  "created_at": "2026-03-20T00:00:00Z",
+  "updated_at": "2026-03-20T00:00:00Z",
+  "description": "Claim graph for dispatch convergence under a finite-state model.",
+  "root_claim_ids": [
+    "claim.dispatch.driver_assignment_converges"
+  ],
+  "graph_policy": {
+    "default_assumption_carrier": "locale",
+    "allow_global_axioms": false,
+    "require_backtranslation_review": true,
+    "require_dual_formalization_for_core_claims": true
+  },
+  "claims": [
+    {
+      "claim_id": "claim.dispatch.dispatch_model_defined",
+      "title": "Dispatch model is defined",
+      "nl_statement": "The dispatch state space and transition relation are defined.",
+      "normalized_statement": "A finite-state dispatch model with an explicit transition relation is available.",
+      "intent_gloss": "This is a modeling prerequisite, not a convergence claim.",
+      "claim_class": "enabling_claim",
+      "claim_kind": "definition_candidate",
+      "status": "queued_for_formalization",
+      "formalization_required": true,
+      "downstream_kind": "research_then_dev",
+      "priority": 80,
+      "tags": [
+        "dispatch",
+        "model"
+      ],
+      "notes": [],
+      "scope": {
+        "domain": "finite dispatch systems",
+        "modality": "universal",
+        "included_conditions": [
+          "finite driver pool",
+          "finite order pool within horizon H"
+        ],
+        "excluded_conditions": [
+          "continuous-time dynamics",
+          "unbounded state augmentation during a proof"
+        ]
+      },
+      "semantics_guard": {
+        "must_preserve": [
+          "explicit transition relation",
+          "finite state space"
+        ],
+        "allowed_weakenings": [],
+        "forbidden_weakenings": [
+          "implicit transition semantics"
+        ],
+        "forbidden_strengthenings": [
+          "deterministic dynamics unless explicitly stated"
+        ],
+        "backtranslation_required": true,
+        "independent_formalizations_required": 1
+      },
+      "policy": {
+        "allowed_assumption_carriers": [
+          "premise",
+          "locale"
+        ],
+        "global_axiom_allowed": false,
+        "sorry_allowed_in_scratch": true,
+        "sorry_allowed_in_mainline": false
+      },
+      "provenance": {
+        "created_by_role": "planner",
+        "source_anchors": [
+          {
+            "source_type": "user_message",
+            "source_ref": "chat:2026-03-19:msg1",
+            "excerpt": "Build a delivery system and reason about stable assignment."
+          }
+        ],
+        "last_reviewed_by_role": "planner",
+        "review_notes": []
+      },
+      "owner_role": "planner",
+      "reviewer_roles": [
+        "claim_graph_agent",
+        "human_reviewer"
+      ]
+    },
+    {
+      "claim_id": "claim.dispatch.matching_step_wellformed",
+      "title": "Matching step is well formed",
+      "nl_statement": "Each dispatch update produces a valid next state.",
+      "normalized_statement": "The transition function preserves model invariants.",
+      "intent_gloss": "No illegal state is introduced by the update step.",
+      "claim_class": "enabling_claim",
+      "claim_kind": "invariant",
+      "status": "queued_for_formalization",
+      "formalization_required": true,
+      "downstream_kind": "research_then_dev",
+      "priority": 85,
+      "tags": [
+        "dispatch",
+        "invariant"
+      ],
+      "notes": [],
+      "scope": {
+        "domain": "finite dispatch systems",
+        "modality": "universal",
+        "included_conditions": [
+          "dispatch model defined"
+        ],
+        "excluded_conditions": [
+          "external manual overrides"
+        ]
+      },
+      "semantics_guard": {
+        "must_preserve": [
+          "state validity after each update"
+        ],
+        "allowed_weakenings": [],
+        "forbidden_weakenings": [
+          "valid for most states only"
+        ],
+        "forbidden_strengthenings": [
+          "termination by itself"
+        ],
+        "backtranslation_required": true,
+        "independent_formalizations_required": 1
+      },
+      "policy": {
+        "allowed_assumption_carriers": [
+          "premise",
+          "locale"
+        ],
+        "global_axiom_allowed": false,
+        "sorry_allowed_in_scratch": true,
+        "sorry_allowed_in_mainline": false
+      },
+      "provenance": {
+        "created_by_role": "claim_graph_agent",
+        "source_anchors": [
+          {
+            "source_type": "planner_note",
+            "source_ref": "note:dispatch-invariant-1",
+            "excerpt": "Need a well-formedness invariant before any convergence statement."
+          }
+        ],
+        "last_reviewed_by_role": "planner",
+        "review_notes": []
+      },
+      "owner_role": "planner",
+      "reviewer_roles": [
+        "claim_graph_agent",
+        "human_reviewer"
+      ]
+    },
+    {
+      "claim_id": "claim.dispatch.finite_decrease_measure",
+      "title": "A decrease measure exists",
+      "nl_statement": "Every non-terminal dispatch step strictly decreases a well-founded measure.",
+      "normalized_statement": "There is a well-founded ranking function for non-terminal steps.",
+      "intent_gloss": "This is an explicit hypothesis used to state convergence.",
+      "claim_class": "assumption",
+      "claim_kind": "hypothesis",
+      "status": "candidate",
+      "formalization_required": true,
+      "downstream_kind": "research_only",
+      "priority": 70,
+      "tags": [
+        "dispatch",
+        "measure",
+        "assumption"
+      ],
+      "notes": [],
+      "scope": {
+        "domain": "finite dispatch systems",
+        "modality": "universal",
+        "included_conditions": [
+          "non-terminal transitions only"
+        ],
+        "excluded_conditions": [
+          "adversarial resupply of unmatched orders"
+        ]
+      },
+      "semantics_guard": {
+        "must_preserve": [
+          "strict decrease on non-terminal transitions",
+          "well-founded target order"
+        ],
+        "allowed_weakenings": [],
+        "forbidden_weakenings": [
+          "expected decrease only"
+        ],
+        "forbidden_strengthenings": [
+          "global convergence without stating the measure"
+        ],
+        "backtranslation_required": true,
+        "independent_formalizations_required": 2
+      },
+      "policy": {
+        "allowed_assumption_carriers": [
+          "premise",
+          "locale"
+        ],
+        "global_axiom_allowed": false,
+        "sorry_allowed_in_scratch": true,
+        "sorry_allowed_in_mainline": false
+      },
+      "provenance": {
+        "created_by_role": "planner",
+        "source_anchors": [
+          {
+            "source_type": "planner_note",
+            "source_ref": "note:dispatch-measure-1",
+            "excerpt": "Convergence must stay conditional on an explicit decrease measure."
+          }
+        ],
+        "last_reviewed_by_role": "planner",
+        "review_notes": []
+      },
+      "owner_role": "planner",
+      "reviewer_roles": [
+        "claim_graph_agent",
+        "human_reviewer"
+      ]
+    },
+    {
+      "claim_id": "claim.dispatch.driver_assignment_converges",
+      "title": "Driver assignment converges",
+      "nl_statement": "The driver assignment policy converges to a stable assignment state in finite time.",
+      "normalized_statement": "Under the declared dispatch model and decrease-measure assumptions, every execution reaches a stable state after finitely many updates.",
+      "intent_gloss": "This is a mathematical finite-time convergence claim, not merely high-probability empirical convergence.",
+      "claim_class": "core_claim",
+      "claim_kind": "theorem_candidate",
+      "status": "formalizing",
+      "formalization_required": true,
+      "downstream_kind": "research_then_dev",
+      "priority": 95,
+      "tags": [
+        "dispatch",
+        "convergence",
+        "core"
+      ],
+      "notes": [
+        "Deployment claims must not overstate the theorem beyond its declared scope."
+      ],
+      "scope": {
+        "domain": "finite dispatch systems",
+        "modality": "universal",
+        "included_conditions": [
+          "dispatch model defined",
+          "matching step well formed",
+          "decrease measure exists"
+        ],
+        "excluded_conditions": [
+          "stochastic arrivals during the proof horizon",
+          "manual intervention after each step"
+        ]
+      },
+      "semantics_guard": {
+        "must_preserve": [
+          "finite-time convergence",
+          "stable assignment state",
+          "explicit dependence on the measure hypothesis"
+        ],
+        "allowed_weakenings": [
+          "replace 'stable assignment state' with a formally equivalent normal-form notion if back-translation review passes"
+        ],
+        "forbidden_weakenings": [
+          "replace finite-time convergence with eventual empirical convergence",
+          "hide the measure hypothesis"
+        ],
+        "forbidden_strengthenings": [
+          "claim optimality of the stable state",
+          "claim robustness to arbitrary stochastic arrivals"
+        ],
+        "backtranslation_required": true,
+        "independent_formalizations_required": 2
+      },
+      "policy": {
+        "allowed_assumption_carriers": [
+          "premise",
+          "locale"
+        ],
+        "global_axiom_allowed": false,
+        "sorry_allowed_in_scratch": true,
+        "sorry_allowed_in_mainline": false
+      },
+      "provenance": {
+        "created_by_role": "planner",
+        "source_anchors": [
+          {
+            "source_type": "user_message",
+            "source_ref": "chat:2026-03-19:msg2",
+            "excerpt": "I want a general architecture that does not let the agent force a weird argument into the proof."
+          }
+        ],
+        "last_reviewed_by_role": "planner",
+        "review_notes": [
+          "Core claim must keep its mathematical, not merely empirical, reading."
+        ]
+      },
+      "owner_role": "planner",
+      "reviewer_roles": [
+        "claim_graph_agent",
+        "human_reviewer",
+        "formalizer"
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "relation_id": "rel.dispatch.wellformed_depends_on_model",
+      "from_claim_id": "claim.dispatch.matching_step_wellformed",
+      "to_claim_id": "claim.dispatch.dispatch_model_defined",
+      "relation_type": "depends_on",
+      "status": "active",
+      "required_for_promotion": true,
+      "rationale": "Invariant preservation is stated over the explicit model."
+    },
+    {
+      "relation_id": "rel.dispatch.convergence_depends_on_wellformed",
+      "from_claim_id": "claim.dispatch.driver_assignment_converges",
+      "to_claim_id": "claim.dispatch.matching_step_wellformed",
+      "relation_type": "depends_on",
+      "status": "active",
+      "required_for_promotion": true,
+      "rationale": "Convergence only makes sense if each step stays inside the state space."
+    },
+    {
+      "relation_id": "rel.dispatch.convergence_depends_on_measure",
+      "from_claim_id": "claim.dispatch.driver_assignment_converges",
+      "to_claim_id": "claim.dispatch.finite_decrease_measure",
+      "relation_type": "depends_on",
+      "status": "active",
+      "required_for_promotion": true,
+      "rationale": "The target theorem is explicitly conditional on the ranking hypothesis."
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "formal-claim-evidence-connectors"
+version = "0.1.0"
+description = "Canonical evidence and document-ingest adapters for the Formal Claim Workbench."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "pydantic>=2.12,<3",
+  "pypdf>=5,<6",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/formal_claim_evidence_connectors"]

@@ -1,0 +1,154 @@
+{
+  "schema_version": "1.0.0",
+  "graph_id": "ag.dispatch",
+  "project_id": "project.agent_ide",
+  "created_at": "2026-03-20T00:00:00Z",
+  "updated_at": "2026-03-20T00:00:00Z",
+  "description": "Assurance graph linking the convergence claim to formal artifacts, evidence, reviews, and runtime contracts.",
+  "nodes": [
+    {
+      "node_id": "node.claim.driver_assignment_converges",
+      "node_type": "claim",
+      "title": "Driver assignment converges",
+      "summary": "Anchor node for the core convergence claim.",
+      "claim_ref": "claim.dispatch.driver_assignment_converges",
+      "status": "active"
+    },
+    {
+      "node_id": "node.formal.dispatch.driver_assignment_converges",
+      "node_type": "formal_artifact",
+      "title": "Dispatch_Model_A.driver_assignment_converges",
+      "summary": "Primary Isabelle theorem candidate for finite-time convergence.",
+      "system": "isabelle_hol",
+      "artifact_kind": "theorem",
+      "identifier": "Dispatch_Model_A.driver_assignment_converges",
+      "session": "Dispatch",
+      "theory": "Dispatch_Model_A",
+      "file_path": "thy/Dispatch_Model_A.thy",
+      "status": "approved",
+      "proof_status": "proof_complete"
+    },
+    {
+      "node_id": "node.formal.dispatch.dispatch_context",
+      "node_type": "formal_artifact",
+      "title": "Dispatch_Model_A.dispatch_context",
+      "summary": "Locale carrying the finite-state and decrease-measure assumptions.",
+      "system": "isabelle_hol",
+      "artifact_kind": "locale",
+      "identifier": "Dispatch_Model_A.dispatch_context",
+      "session": "Dispatch",
+      "theory": "Dispatch_Model_A",
+      "file_path": "thy/Dispatch_Model_A.thy",
+      "status": "approved",
+      "proof_status": "built"
+    },
+    {
+      "node_id": "node.assumptions.dispatch_context",
+      "node_type": "assumption_set",
+      "title": "Dispatch context assumptions",
+      "summary": "Approved locale-scoped assumptions for the convergence theorem.",
+      "scope_kind": "locale",
+      "items": [
+        "finite state space",
+        "matching step preserves invariants",
+        "every non-terminal step strictly decreases a well-founded measure"
+      ],
+      "approved": true,
+      "status": "approved"
+    },
+    {
+      "node_id": "node.evidence.simulation.convergence_10000",
+      "node_type": "evidence",
+      "title": "10,000-run convergence simulation",
+      "summary": "Simulation supports the declared model assumptions and observed convergence behavior.",
+      "evidence_kind": "simulation",
+      "result_polarity": "supports",
+      "artifact_refs": [
+        "experiments/convergence_sim.py",
+        "results/convergence_10000.json"
+      ],
+      "confidence": 0.97,
+      "status": "active"
+    },
+    {
+      "node_id": "node.review.backtranslation.driver_assignment_converges",
+      "node_type": "review",
+      "title": "Back-translation review for the convergence theorem",
+      "summary": "Human review confirmed that the theorem statement still reads as finite-time convergence under the declared locale assumptions.",
+      "review_kind": "backtranslation",
+      "reviewer_role": "human_reviewer",
+      "outcome": "pass",
+      "status": "approved"
+    },
+    {
+      "node_id": "node.contract.runtime.convergence_timeout_guard",
+      "node_type": "contract",
+      "title": "Runtime timeout guard for convergence assumptions",
+      "summary": "Engineering may rely on the theorem only when runtime monitors confirm the finite-state model and update discipline.",
+      "contract_kind": "runtime_guard",
+      "owner_role": "dev",
+      "status": "approved",
+      "acceptance_conditions": [
+        "state representation remains finite",
+        "update function preserves invariants",
+        "monitor fires if unexpected external intervention occurs"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "edge_id": "edge.formalizes.convergence",
+      "source_id": "node.formal.dispatch.driver_assignment_converges",
+      "target_id": "node.claim.driver_assignment_converges",
+      "relation_type": "formalizes",
+      "status": "active",
+      "rationale": "Primary theorem candidate for the core claim.",
+      "strength": 0.92
+    },
+    {
+      "edge_id": "edge.theorem.depends_on.locale",
+      "source_id": "node.formal.dispatch.driver_assignment_converges",
+      "target_id": "node.formal.dispatch.dispatch_context",
+      "relation_type": "depends_on",
+      "status": "active",
+      "rationale": "The theorem is stated inside the locale context.",
+      "strength": 1.0
+    },
+    {
+      "edge_id": "edge.locale.scoped_by.assumptions",
+      "source_id": "node.formal.dispatch.dispatch_context",
+      "target_id": "node.assumptions.dispatch_context",
+      "relation_type": "scoped_by",
+      "status": "active",
+      "rationale": "The locale packages the reviewed local assumptions.",
+      "strength": 1.0
+    },
+    {
+      "edge_id": "edge.simulation.supports.claim",
+      "source_id": "node.evidence.simulation.convergence_10000",
+      "target_id": "node.claim.driver_assignment_converges",
+      "relation_type": "supports",
+      "status": "active",
+      "rationale": "Simulation supports the model interpretation and expected behavior but does not replace the theorem.",
+      "strength": 0.65
+    },
+    {
+      "edge_id": "edge.review.reviews.theorem",
+      "source_id": "node.review.backtranslation.driver_assignment_converges",
+      "target_id": "node.formal.dispatch.driver_assignment_converges",
+      "relation_type": "reviews",
+      "status": "active",
+      "rationale": "Back-translation review targets the theorem wording.",
+      "strength": 1.0
+    },
+    {
+      "edge_id": "edge.contract.derived_from.theorem",
+      "source_id": "node.contract.runtime.convergence_timeout_guard",
+      "target_id": "node.formal.dispatch.driver_assignment_converges",
+      "relation_type": "derived_from",
+      "status": "active",
+      "rationale": "The runtime guard is derived from the theorem's scope assumptions.",
+      "strength": 0.88
+    }
+  ]
+}

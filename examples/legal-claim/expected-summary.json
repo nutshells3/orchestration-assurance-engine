@@ -1,0 +1,10 @@
+{
+  "scenario_id": "legal-claim",
+  "domain": "legal",
+  "target_claim_id": "claim.legal.termination_without_notice_is_invalid",
+  "source_document_kind": "local_file",
+  "minimum_claim_count": 3,
+  "minimum_reference_count": 1,
+  "minimum_assurance_link_count": 1,
+  "final_promotion_gate": "dev_guarded"
+}

@@ -1,0 +1,40 @@
+name: Governance Request
+description: Propose a policy, ownership, or workflow change for the repository.
+title: "[Governance] "
+labels:
+  - docs
+body:
+  - type: dropdown
+    id: topic
+    attributes:
+      label: Topic
+      options:
+        - CODEOWNERS
+        - labels and milestones
+        - issue templates
+        - pull request workflow
+        - backlog policy
+        - release process
+        - agent instructions
+    validations:
+      required: true
+  - type: textarea
+    id: current_state
+    attributes:
+      label: Current state
+      description: Describe the current repository rule or missing governance asset.
+    validations:
+      required: true
+  - type: textarea
+    id: proposed_change
+    attributes:
+      label: Proposed change
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact and tradeoffs
+      description: Explain who or what would be affected.
+    validations:
+      required: true
