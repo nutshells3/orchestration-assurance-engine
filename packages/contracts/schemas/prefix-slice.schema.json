@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/prefix-slice.schema.json",
+  "title": "PrefixSliceTextV1",
+  "description": "Text-projection prefix slice (CNT-005). Graph projections use prefix-slice-graph.schema.json. Do NOT combine both projections in a single mutable object.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "trace_id",
+    "step_id",
+    "state_text",
+    "available_artifacts"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "trace_id": {
+      "$ref": "#/$defs/id"
+    },
+    "step_id": {
+      "$ref": "#/$defs/id"
+    },
+    "state_text": {
+      "type": "string",
+      "description": "Domain-free canonical serialization of the current pipeline state"
+    },
+    "available_artifacts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "legal_action_mask": {
+      "oneOf": [
+        {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        { "type": "null" }
+      ]
+    },
+    "gold_action": {
+      "oneOf": [
+        { "type": "object" },
+        { "type": "null" }
+      ],
+      "description": "Gold-standard action for SFT training only"
+    },
+    "omission_reason": {
+      "oneOf": [
+        { "$ref": "#/$defs/omissionReason" },
+        { "type": "null" }
+      ],
+      "description": "Why a canonical field was intentionally omitted (CNT-007)"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:-]+$"
+    },
+    "omissionReason": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "unsupported",
+        "cost_policy",
+        "runtime_limit"
+      ],
+      "description": "Why a canonical field was intentionally omitted from a derived manifest (CNT-007)"
+    }
+  }
+}

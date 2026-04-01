@@ -1,0 +1,57 @@
+"""Canonical evidence connectors."""
+
+from .document_ingest import (
+    build_inline_source_document,
+    build_uploaded_source_document,
+    build_default_graph_policy,
+    ingest_trace_document,
+    load_local_text_document,
+    load_uploaded_document,
+    normalize_citation_anchor,
+    trace_claim_to_canonical,
+    trace_relation_to_canonical,
+)
+from .evaluation_evidence import extract_evaluation_evidence
+from .models import (
+    TraceCitationAnchor,
+    TraceClaimMapping,
+    TraceDocumentClaim,
+    TraceDocumentIngestBundle,
+    TraceDocumentIngestRequest,
+    TraceDocumentIngestResult,
+    TraceDocumentMappingReport,
+    TraceDocumentRelation,
+    TraceEvidenceItem,
+    TraceEvaluationEvidence,
+    TraceRawUnit,
+    TraceRelationMapping,
+    TraceSourceDocument,
+    TraceUnresolvedReference,
+)
+
+__all__ = [
+    "TraceCitationAnchor",
+    "TraceClaimMapping",
+    "TraceDocumentClaim",
+    "TraceDocumentIngestBundle",
+    "TraceDocumentIngestRequest",
+    "TraceDocumentIngestResult",
+    "TraceDocumentMappingReport",
+    "TraceDocumentRelation",
+    "TraceEvidenceItem",
+    "TraceEvaluationEvidence",
+    "TraceRawUnit",
+    "TraceRelationMapping",
+    "TraceSourceDocument",
+    "TraceUnresolvedReference",
+    "build_inline_source_document",
+    "build_uploaded_source_document",
+    "build_default_graph_policy",
+    "extract_evaluation_evidence",
+    "ingest_trace_document",
+    "load_local_text_document",
+    "load_uploaded_document",
+    "normalize_citation_anchor",
+    "trace_claim_to_canonical",
+    "trace_relation_to_canonical",
+]

@@ -1,0 +1,147 @@
+# ============================================================================
+# Unified verification stack configuration
+# ============================================================================
+# Every key supports env-var override: VERIFY_<SECTION>_<KEY>
+# e.g. VERIFY_LLM_ROLES_FORMALIZER_A_MODEL overrides [llm.roles.formalizer_a].model
+
+[stack]
+version = "1"
+data_dir = "./pipeline_data"
+
+# -- LLM Model Routing ------------------------------------------------------
+[llm.defaults]
+provider = "anthropic"
+model = "claude-sonnet-4-20250514"
+temperature = 0.2
+max_tokens = 8192
+api_base = ""
+api_key_env = ""
+reasoning_effort = ""
+
+[llm.roles.planner]
+temperature = 0.3
+
+[llm.roles.claim_graph_agent]
+
+[llm.roles.claim_tracer]
+temperature = 0.15
+
+[llm.roles.formalizer_a]
+temperature = 0.1
+max_tokens = 16384
+
+[llm.roles.formalizer_b]
+temperature = 0.1
+max_tokens = 16384
+api_key_env = "ANTHROPIC_API_KEY"
+
+[llm.roles.proof_verifier]
+temperature = 0.0
+
+[llm.roles.auditor]
+
+[llm.roles.research_agent]
+provider = "openai"
+model = "gpt-4o"
+temperature = 0.3
+
+[llm.roles.dev_agent]
+
+[llm.roles.policy_engine]
+temperature = 0.0
+max_tokens = 4096
+
+[llm.session_override]
+enabled = false
+codex_large_model = "gpt-5.4"
+codex_small_model = "gpt-5.4-mini"
+claude_large_model = ""
+claude_small_model = ""
+formalizer_a_model = "gpt-5.4-nano"
+formalizer_a_effort = "xhigh"
+formalizer_b_model = "haiku"
+formalizer_b_effort = ""
+
+# -- Retry Policies ----------------------------------------------------------
+[retry.llm_call]
+max_attempts = 3
+backoff = "exponential"
+base_ms = 1000
+cap_ms = 30000
+jitter = true
+
+[retry.llm_empty_output]
+max_attempts = 3
+backoff = "none"
+base_ms = 0
+cap_ms = 0
+jitter = false
+
+[retry.proof_build]
+max_attempts = 2
+backoff = "linear"
+base_ms = 5000
+cap_ms = 30000
+jitter = false
+
+[retry.workflow_phase]
+max_attempts = 3
+backoff = "none"
+base_ms = 0
+cap_ms = 0
+jitter = false
+
+[retry.certification_transport]
+max_attempts = 3
+backoff = "exponential"
+base_ms = 1000
+cap_ms = 30000
+jitter = true
+
+# -- Verification Methods ----------------------------------------------------
+[verification]
+dual_formalization = true
+sorry_detection = "strict"
+
+[verification.backend]
+id = "lean-local"
+transport = "local_hub"
+endpoint = ""
+auth_token_env = "FWP_AUTH_TOKEN"
+origin = "formal-claim"
+timeout_seconds = 5.0
+poll_interval_seconds = 0.25
+
+[verification.audit_probes]
+counterexample = true
+proof_search = true
+dependency_slice = true
+premise_deletion = false
+conclusion_perturbation = false
+
+[verification.budget]
+wall_timeout_seconds = 600
+idle_timeout_seconds = 120
+cancel_grace_seconds = 5
+max_rss_mb = 512
+max_output_bytes = 32768
+max_diag_count = 128
+max_children = 2
+max_restarts = 0
+
+# -- Proof Assistant ---------------------------------------------------------
+[proof_assistant]
+host = "127.0.0.1"
+port = 8780
+max_concurrent_runs = 4
+data_dir = "./proof-assistant-data"
+
+[proof_assistant.backends]
+isabelle_home = ""
+lean_home = ""
+rocq_home = ""
+
+# -- Integration -------------------------------------------------------------
+[integration]
+certification_frequency = "on_request"
+http_api_port = 8321

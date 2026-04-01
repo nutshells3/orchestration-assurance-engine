@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0.0",
+  "source_domain": "mathematics",
+  "meta": {
+    "trace_id": "trace-bad",
+    "schema_version": "1.0.0",
+    "oae_commit": "abc",
+    "audit_rules_version": "1.0.0",
+    "promotion_fsm_version": "1.0.0",
+    "verifier_versions": {},
+    "source_sha256": "dead"
+  },
+  "source": {
+    "source_text": "text",
+    "source_units": []
+  },
+  "phase1": {
+    "claim_graph": {},
+    "structuring_workflow": {"planner_action": "x", "attempts": [], "validation_errors": []},
+    "candidate_ledger": {
+      "claims_proposed": [], "claims_accepted": [], "claims_rejected": [],
+      "relations_proposed": [], "relations_accepted": [], "relations_rejected": []
+    }
+  },
+  "phase2": {
+    "per_claim": {},
+    "phase2_flags": {"phase2_executed": false, "certification_eligible": false}
+  },
+  "phase3": {"evidence": {}},
+  "trace_results": {
+    "forward_traces": {},
+    "backward_traces": {},
+    "gap_analysis": {},
+    "soundness": {"score": 0.0, "method": "none", "notes": []}
+  }
+}

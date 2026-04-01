@@ -1,0 +1,344 @@
+{
+  "schema_version": "1.0.0",
+  "profile_id": "profile.claim.dispatch.driver_assignment_converges",
+  "project_id": "project.agent_ide",
+  "created_at": "<timestamp>",
+  "updated_at": "<timestamp>",
+  "claim_id": "claim.dispatch.driver_assignment_converges",
+  "claim_graph_ref": "cg.dispatch",
+  "assurance_graph_ref": "ag.dispatch",
+  "target_formal_artifact": {
+    "artifact_id": "node.formal.dispatch.driver_assignment_converges",
+    "system": "isabelle_hol",
+    "session": "Dispatch",
+    "theory": "Dispatch_Model_A",
+    "theorem": "driver_assignment_converges"
+  },
+  "formal_status": "proof_complete",
+  "support_status": "simulation_supported",
+  "intent_status": "aligned",
+  "gate": "blocked",
+  "decision_rationale": "Gate=blocked from formal_status=proof_complete, intent_status=aligned, support_status=simulation_supported, coverage=1.00, robustness=97, proofClaim.score=74 via qbaf_df_quad.",
+  "trust_frontier": {
+    "global_axiom_dependency_count": 1,
+    "locale_assumption_count": 2,
+    "premise_assumption_count": 1,
+    "oracle_dependency_count": 1,
+    "unreviewed_import_count": 1,
+    "transitive_dependency_count": 3,
+    "reviewed_global_axiom_ids": [
+      "axiom.choice"
+    ],
+    "oracle_ids": [
+      "oracle.fastforce"
+    ],
+    "hotspot_artifact_ids": [
+      "node.formal.dispatch.dispatch_context"
+    ],
+    "notes": [
+      "export trust surface present",
+      "Oracle dependencies were detected in the theorem-local closure.",
+      "Imported theories contribute hotspot artifacts to the target theorem.",
+      "1 reviewed exception(s) are attached to the theorem-local closure."
+    ]
+  },
+  "conservativity": {
+    "definitional_only": false,
+    "reviewed_global_axioms_required": true,
+    "compile_away_known": false,
+    "nondefinitional_hotspots": [
+      "oracle.fastforce"
+    ],
+    "trusted_mechanisms": [
+      "definition",
+      "locale",
+      "theorem"
+    ],
+    "flagged_mechanisms": [
+      "oracle"
+    ]
+  },
+  "obligations": {
+    "sorry_count": 0,
+    "oops_count": 0,
+    "open_goal_count": 0,
+    "unresolved_bridge_count": 0,
+    "missing_backtranslation_review_count": 0,
+    "blocking_obligations": []
+  },
+  "model_health": {
+    "locale_satisfiability": "untested",
+    "countermodel_probe": "no_countermodel_found",
+    "vacuity_check": "fail",
+    "premise_sensitivity": "fragile",
+    "conclusion_perturbation": "stable",
+    "notes": [
+      "Nitpick found no countermodel.",
+      "Sledgehammer returned replay hints."
+    ]
+  },
+  "intent_alignment": {
+    "independent_formalization_count": 2,
+    "agreement_score": 0.91,
+    "backtranslation_review": "pass",
+    "paraphrase_robustness_score": 0.84,
+    "semantics_guard_violations": [],
+    "reviewer_notes": [
+      "Fixture request uses the suspicious theorem-local audit path."
+    ]
+  },
+  "coverage": {
+    "formalized_subclaim_count": 3,
+    "residual_subclaim_count": 0,
+    "dependency_coverage_score": 1.0,
+    "evidence_link_coverage_score": 1.0,
+    "required_claim_ids": [
+      "claim.dispatch.matching_step_wellformed",
+      "claim.dispatch.finite_decrease_measure",
+      "claim.dispatch.dispatch_model_defined"
+    ],
+    "uncovered_claim_ids": []
+  },
+  "robustness": {
+    "linter_finding_count": 0,
+    "replay_status": "pass",
+    "rebuild_count": 2,
+    "reproducibility_score": 0.95,
+    "cross_tool_review_status": "pass",
+    "notes": []
+  },
+  "support_profile": {
+    "evidence_counts": {
+      "experiment": 0,
+      "literature": 0,
+      "simulation": 1,
+      "test_run": 0,
+      "countermodel": 0,
+      "manual_review": 0
+    },
+    "strongest_positive_evidence_ids": [
+      "node.evidence.simulation.convergence_10000"
+    ],
+    "strongest_negative_evidence_ids": [],
+    "bridge_notes": [
+      "Simulation supports the claim under the declared assumptions."
+    ]
+  },
+  "vector_scores": {
+    "trust_base_integrity": 18,
+    "intent_alignment": 99,
+    "evidence_support": 56,
+    "coverage": 100,
+    "robustness": 97,
+    "scheduler_score": 74
+  },
+  "proofClaim": {
+    "score": 74,
+    "scoreMethod": "qbaf_df_quad",
+    "scoreVersion": "1.0.0",
+    "scoreBreakdownRef": "profile:profile.claim.dispatch.driver_assignment_converges#proofClaimBreakdown"
+  },
+  "proofClaimBreakdown": {
+    "scoreMethod": "qbaf_df_quad",
+    "scoreVersion": "1.0.0",
+    "aggregateBaseScore": 0.716,
+    "aggregateFinalScore": 0.7399,
+    "dimensions": [
+      {
+        "dimension": "trust_base_integrity",
+        "baseScore": 0.37,
+        "finalScore": 0.1761,
+        "supporters": [
+          {
+            "argumentId": "arg.trust.reviewed_global_axioms",
+            "label": "Reviewed global axioms",
+            "polarity": "support",
+            "nodeConfidence": 1.0,
+            "relationStrength": 0.35,
+            "effectiveStrength": 0.35,
+            "summary": "Every global axiom dependency is explicitly reviewed."
+          }
+        ],
+        "attackers": [
+          {
+            "argumentId": "arg.trust.oracle_dependencies",
+            "label": "Oracle dependency",
+            "polarity": "attack",
+            "nodeConfidence": 0.6,
+            "relationStrength": 0.8,
+            "effectiveStrength": 0.48,
+            "summary": "Oracle-backed proof steps weaken trust-base integrity."
+          },
+          {
+            "argumentId": "arg.trust.hotspot_imports",
+            "label": "Hotspot imports",
+            "polarity": "attack",
+            "nodeConfidence": 0.35,
+            "relationStrength": 0.45,
+            "effectiveStrength": 0.1575,
+            "summary": "Imported hotspot artifacts require operator review."
+          },
+          {
+            "argumentId": "arg.trust.vacuity",
+            "label": "Vacuity failure",
+            "polarity": "attack",
+            "nodeConfidence": 0.95,
+            "relationStrength": 0.75,
+            "effectiveStrength": 0.7125,
+            "summary": "A vacuity failure indicates the proof may not track the intended dependency frontier."
+          }
+        ]
+      },
+      {
+        "dimension": "intent_alignment",
+        "baseScore": 0.91,
+        "finalScore": 0.993,
+        "supporters": [
+          {
+            "argumentId": "arg.intent.agreement",
+            "label": "Formalizer agreement",
+            "polarity": "support",
+            "nodeConfidence": 0.91,
+            "relationStrength": 0.7,
+            "effectiveStrength": 0.637,
+            "summary": "Independent formalizations agree on the intended claim meaning."
+          },
+          {
+            "argumentId": "arg.intent.paraphrase",
+            "label": "Paraphrase robustness",
+            "polarity": "support",
+            "nodeConfidence": 0.84,
+            "relationStrength": 0.55,
+            "effectiveStrength": 0.462,
+            "summary": "Paraphrase robustness supports intent preservation."
+          },
+          {
+            "argumentId": "arg.intent.backtranslation_pass",
+            "label": "Backtranslation review passed",
+            "polarity": "support",
+            "nodeConfidence": 1.0,
+            "relationStrength": 0.6,
+            "effectiveStrength": 0.6,
+            "summary": "Backtranslation review confirms the formalization tracks the original claim."
+          }
+        ],
+        "attackers": []
+      },
+      {
+        "dimension": "evidence_support",
+        "baseScore": 0.35,
+        "finalScore": 0.5612,
+        "supporters": [
+          {
+            "argumentId": "arg.evidence.simulation",
+            "label": "Simulation support",
+            "polarity": "support",
+            "nodeConfidence": 0.5,
+            "relationStrength": 0.65,
+            "effectiveStrength": 0.325,
+            "summary": "1 simulation item(s) support the claim."
+          }
+        ],
+        "attackers": []
+      },
+      {
+        "dimension": "coverage",
+        "baseScore": 1.0,
+        "finalScore": 1.0,
+        "supporters": [
+          {
+            "argumentId": "arg.coverage.dependencies",
+            "label": "Dependency coverage",
+            "polarity": "support",
+            "nodeConfidence": 1.0,
+            "relationStrength": 0.75,
+            "effectiveStrength": 0.75,
+            "summary": "Covered dependency links support the coverage dimension."
+          },
+          {
+            "argumentId": "arg.coverage.evidence_links",
+            "label": "Evidence-link coverage",
+            "polarity": "support",
+            "nodeConfidence": 1.0,
+            "relationStrength": 0.55,
+            "effectiveStrength": 0.55,
+            "summary": "Evidence links strengthen the coverage dimension."
+          },
+          {
+            "argumentId": "arg.coverage.no_uncovered_claims",
+            "label": "No uncovered supporting claims",
+            "polarity": "support",
+            "nodeConfidence": 1.0,
+            "relationStrength": 0.45,
+            "effectiveStrength": 0.45,
+            "summary": "All required supporting claims are covered."
+          }
+        ],
+        "attackers": []
+      },
+      {
+        "dimension": "robustness",
+        "baseScore": 0.95,
+        "finalScore": 0.9693,
+        "supporters": [
+          {
+            "argumentId": "arg.robustness.reproducibility",
+            "label": "Reproducibility",
+            "polarity": "support",
+            "nodeConfidence": 0.95,
+            "relationStrength": 0.75,
+            "effectiveStrength": 0.7125,
+            "summary": "Stable replay and rebuild behavior supports robustness."
+          },
+          {
+            "argumentId": "arg.robustness.replay_pass",
+            "label": "Replay passed",
+            "polarity": "support",
+            "nodeConfidence": 1.0,
+            "relationStrength": 0.55,
+            "effectiveStrength": 0.55,
+            "summary": "Replay passed under the current governed runner budget."
+          },
+          {
+            "argumentId": "arg.robustness.cross_tool_review",
+            "label": "Cross-tool review passed",
+            "polarity": "support",
+            "nodeConfidence": 1.0,
+            "relationStrength": 0.35,
+            "effectiveStrength": 0.35,
+            "summary": "Cross-tool review supports robustness."
+          },
+          {
+            "argumentId": "arg.robustness.conclusion_stable",
+            "label": "Conclusion perturbation stable",
+            "polarity": "support",
+            "nodeConfidence": 0.8,
+            "relationStrength": 0.35,
+            "effectiveStrength": 0.28,
+            "summary": "Conclusion perturbation replay remained stable."
+          }
+        ],
+        "attackers": [
+          {
+            "argumentId": "arg.robustness.premise_fragile",
+            "label": "Premise sensitivity fragile",
+            "polarity": "attack",
+            "nodeConfidence": 0.85,
+            "relationStrength": 0.65,
+            "effectiveStrength": 0.5525,
+            "summary": "Premise deletion revealed fragility."
+          }
+        ]
+      }
+    ]
+  },
+  "allowed_downstream": [
+    "research"
+  ],
+  "required_actions": [
+    "Resolve the vacuity failure before promotion.",
+    "Review fragile premise dependencies before promotion.",
+    "Review or eliminate theorem-local oracle dependencies."
+  ],
+  "expires_at": "<timestamp>"
+}

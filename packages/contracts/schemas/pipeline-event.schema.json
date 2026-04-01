@@ -1,0 +1,217 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/pipeline-event.schema.json",
+  "title": "PipelineEventV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "trace_id",
+    "step_id",
+    "phase",
+    "event_type",
+    "event_class",
+    "actor",
+    "before_hash",
+    "after_hash",
+    "changed_ids",
+    "verifier_delta"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "event_id": {
+      "$ref": "#/$defs/id",
+      "description": "Stable unique identifier for this event (CNT-006)"
+    },
+    "trace_id": {
+      "$ref": "#/$defs/id"
+    },
+    "step_id": {
+      "$ref": "#/$defs/id"
+    },
+    "cause_event_id": {
+      "oneOf": [
+        { "$ref": "#/$defs/id" },
+        { "type": "null" }
+      ],
+      "description": "Event that caused this automatic consequence (CNT-006). Null for controllable actions."
+    },
+    "phase": {
+      "type": "string",
+      "enum": [
+        "phase1",
+        "phase2",
+        "phase3",
+        "trace"
+      ]
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "propose_relation",
+        "add_hidden_assumption",
+        "request_recheck",
+        "select_formalization",
+        "finalize_profile",
+        "propose_promotion"
+      ]
+    },
+    "event_class": {
+      "$ref": "#/$defs/eventClass",
+      "description": "Controllable action vs automatic consequence (CNT-006/TRC-009)"
+    },
+    "actor": {
+      "type": "string",
+      "enum": [
+        "planner",
+        "formalizer",
+        "auditor",
+        "system",
+        "human"
+      ]
+    },
+    "before_hash": {
+      "type": "string"
+    },
+    "after_hash": {
+      "type": "string"
+    },
+    "proposal": {
+      "oneOf": [
+        { "type": "object" },
+        { "type": "null" }
+      ]
+    },
+    "accepted": {
+      "oneOf": [
+        { "type": "boolean" },
+        { "type": "null" }
+      ]
+    },
+    "reject_reason": {
+      "oneOf": [
+        { "type": "string" },
+        { "type": "null" }
+      ]
+    },
+    "changed_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/id"
+      }
+    },
+    "verifier_delta": {
+      "$ref": "#/$defs/verifierDelta"
+    }
+  },
+  "if": {
+    "properties": {
+      "accepted": {
+        "const": false
+      }
+    },
+    "required": ["accepted"]
+  },
+  "then": {
+    "required": ["reject_reason"],
+    "properties": {
+      "reject_reason": {
+        "type": "string"
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:-]+$"
+    },
+    "eventClass": {
+      "type": "string",
+      "enum": [
+        "controllable_action",
+        "automatic_consequence"
+      ],
+      "description": "Whether the event is a user/agent controllable action or an automatic system consequence (CNT-006)"
+    },
+    "unavailableReason": {
+      "type": "string",
+      "enum": [
+        "not_applicable",
+        "computation_failed",
+        "runtime_not_captured",
+        "exporter_not_implemented"
+      ],
+      "description": "Why an optional payload is absent (CNT-007). Must be present when a nullable field is null."
+    },
+    "omissionReason": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "unsupported",
+        "cost_policy",
+        "runtime_limit"
+      ],
+      "description": "Why a canonical field was intentionally omitted from a derived manifest (CNT-007)"
+    },
+    "verifierDelta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [],
+      "properties": {
+        "legality": {
+          "oneOf": [
+            { "type": "boolean" },
+            { "type": "null" }
+          ]
+        },
+        "vector_score_delta": {
+          "oneOf": [
+            { "type": "object" },
+            { "type": "null" }
+          ]
+        },
+        "vector_score_delta_unavailable_reason": {
+          "$ref": "#/$defs/unavailableReason",
+          "description": "Required when vector_score_delta is null (CNT-007)"
+        },
+        "gate_before": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ]
+        },
+        "gate_after": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ]
+        },
+        "contradiction_delta": {
+          "oneOf": [
+            { "type": "object" },
+            { "type": "null" }
+          ]
+        },
+        "hidden_assumptions_added": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            { "type": "null" }
+          ]
+        },
+        "profile_recomputed": {
+          "oneOf": [
+            { "type": "boolean" },
+            { "type": "null" }
+          ]
+        }
+      }
+    }
+  }
+}

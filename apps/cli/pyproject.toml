@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "formal-claim-cli"
+version = "0.1.0"
+description = "Human-facing CLI for the Formal Claim Workbench."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "formal-claim-engine",
+]
+
+[project.scripts]
+formal-claim = "formal_claim_cli.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/formal_claim_cli"]
+
+[tool.uv.sources]
+formal-claim-engine = { path = "../../services/engine" }

@@ -1,0 +1,382 @@
+{
+  "scenario_id": "theorem-audit",
+  "name": "Theorem Audit Scenario",
+  "domain": "formal_proof",
+  "description": "Replay a theorem-oriented workflow from local note import to certified export.",
+  "structure_input": "Structure the imported theorem note into a formal proof claim graph and preserve the finite-time convergence semantics.",
+  "target_claim_id": "claim.theorem.dispatch_converges",
+  "ingest_payload": {
+    "claims": [
+      {
+        "id": "dispatch_model_defined",
+        "title": "Dispatch state space is explicit",
+        "statement": "The finite dispatch state space is explicit.",
+        "role": "definition",
+        "source_text": "The finite dispatch state space is explicit.",
+        "scope": "finite dispatch systems",
+        "depth": 0
+      },
+      {
+        "id": "decrease_measure_exists",
+        "title": "A decrease measure exists",
+        "statement": "Each non-terminal update strictly decreases a well-founded ranking.",
+        "role": "hypothesis",
+        "source_text": "Each non-terminal update strictly decreases a well-founded ranking.",
+        "scope": "finite dispatch systems",
+        "depth": 1
+      },
+      {
+        "id": "dispatch_converges",
+        "title": "Dispatch converges",
+        "statement": "Every dispatch run reaches a stable assignment after finitely many updates.",
+        "role": "theorem",
+        "source_text": "Every dispatch run reaches a stable assignment after finitely many updates.",
+        "scope": "finite dispatch systems",
+        "depth": 2
+      }
+    ],
+    "relations": [
+      {
+        "source_id": "dispatch_converges",
+        "target_id": "dispatch_model_defined",
+        "relation_type": "supports",
+        "strength": "deductive",
+        "rationale": "Convergence depends on an explicit finite-state model."
+      },
+      {
+        "source_id": "dispatch_converges",
+        "target_id": "decrease_measure_exists",
+        "relation_type": "supports",
+        "strength": "deductive",
+        "rationale": "The convergence statement is conditional on the ranking hypothesis."
+      }
+    ]
+  },
+  "claim_graph_outline": {
+    "graph_id": "cg.theorem.dispatch",
+    "description": "Canonical theorem workflow graph for dispatch convergence.",
+    "root_claim_ids": [
+      "claim.theorem.dispatch_converges"
+    ],
+    "claims": [
+      {
+        "claim_id": "claim.theorem.dispatch_model_defined",
+        "title": "Dispatch model is explicit",
+        "nl_statement": "The imported note states an explicit finite dispatch state space.",
+        "normalized_statement": "A finite dispatch state space with explicit transitions is available.",
+        "intent_gloss": "Modeling precondition for the theorem.",
+        "claim_class": "enabling_claim",
+        "claim_kind": "definition_candidate",
+        "status": "queued_for_formalization",
+        "priority": 75,
+        "tags": [
+          "theorem",
+          "dispatch",
+          "model"
+        ],
+        "scope_domain": "finite dispatch systems",
+        "included_conditions": [
+          "explicit state space"
+        ],
+        "excluded_conditions": [
+          "continuous-time dynamics"
+        ],
+        "must_preserve": [
+          "finite state space",
+          "explicit transition relation"
+        ],
+        "source_anchors": [
+          {
+            "source_type": "document",
+            "source_ref": "__LATEST_SOURCE_DOCUMENT_REF__",
+            "excerpt": "The finite dispatch state space is explicit."
+          }
+        ]
+      },
+      {
+        "claim_id": "claim.theorem.decrease_measure_exists",
+        "title": "A decrease measure exists",
+        "nl_statement": "The imported note states a well-founded decrease measure for non-terminal updates.",
+        "normalized_statement": "Every non-terminal dispatch update strictly decreases a well-founded ranking.",
+        "intent_gloss": "Explicit hypothesis required by the theorem.",
+        "claim_class": "assumption",
+        "claim_kind": "hypothesis",
+        "status": "candidate",
+        "downstream_kind": "research_only",
+        "priority": 80,
+        "tags": [
+          "theorem",
+          "dispatch",
+          "ranking"
+        ],
+        "scope_domain": "finite dispatch systems",
+        "included_conditions": [
+          "non-terminal updates"
+        ],
+        "excluded_conditions": [
+          "measure inferred from runtime traces only"
+        ],
+        "must_preserve": [
+          "strict decrease",
+          "well-founded ranking"
+        ],
+        "source_anchors": [
+          {
+            "source_type": "document",
+            "source_ref": "__LATEST_SOURCE_DOCUMENT_REF__",
+            "excerpt": "Each non-terminal update strictly decreases a well-founded ranking."
+          }
+        ]
+      },
+      {
+        "claim_id": "claim.theorem.dispatch_converges",
+        "title": "Dispatch converges",
+        "nl_statement": "Every dispatch run reaches a stable assignment after finitely many updates.",
+        "normalized_statement": "Under the explicit model and ranking hypothesis, every dispatch run reaches a stable assignment after finitely many updates.",
+        "intent_gloss": "Finite-time convergence theorem, not just an empirical trend.",
+        "claim_class": "core_claim",
+        "claim_kind": "theorem_candidate",
+        "status": "formalizing",
+        "priority": 95,
+        "tags": [
+          "theorem",
+          "dispatch",
+          "convergence"
+        ],
+        "scope_domain": "finite dispatch systems",
+        "included_conditions": [
+          "explicit finite-state model",
+          "well-founded ranking"
+        ],
+        "excluded_conditions": [
+          "probabilistic convergence only"
+        ],
+        "must_preserve": [
+          "finite-time convergence",
+          "stable assignment endpoint"
+        ],
+        "forbidden_weakenings": [
+          "empirical convergence only"
+        ],
+        "independent_formalizations_required": 2,
+        "source_anchors": [
+          {
+            "source_type": "document",
+            "source_ref": "__LATEST_SOURCE_DOCUMENT_REF__",
+            "excerpt": "Every dispatch run reaches a stable assignment after finitely many updates."
+          }
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "relation_id": "rel.theorem.converges_depends_model",
+        "from_claim_id": "claim.theorem.dispatch_converges",
+        "to_claim_id": "claim.theorem.dispatch_model_defined",
+        "relation_type": "depends_on",
+        "rationale": "The convergence theorem is stated over the explicit dispatch model."
+      },
+      {
+        "relation_id": "rel.theorem.converges_depends_measure",
+        "from_claim_id": "claim.theorem.dispatch_converges",
+        "to_claim_id": "claim.theorem.decrease_measure_exists",
+        "relation_type": "depends_on",
+        "rationale": "The convergence theorem is conditional on the decrease measure."
+      }
+    ]
+  },
+  "formalizer_outputs": {
+    "A": {
+      "claim_id": "claim.theorem.dispatch_converges",
+      "formalizer": "A",
+      "isabelle_code": "theory Dispatch_Converges_A imports Main\\nbegin\\nlemma dispatch_converges:\\n  assumes MODEL: \\\"finite dispatch_state\\\"\\n  assumes DEC: \\\"well_founded ranking\\\"\\n  shows \\\"True\\\"\\n  using MODEL DEC\\n  by simp\\nend\\n",
+      "session_name": "DispatchProofA",
+      "theory_name": "Dispatch_Converges_A",
+      "primary_theorem": "dispatch_converges",
+      "definitions": [
+        "dispatch_state"
+      ],
+      "locale_name": "dispatch_context",
+      "assumptions_used": [
+        {
+          "carrier": "locale",
+          "statement": "finite dispatch_state"
+        }
+      ],
+      "back_translation": "Formalization A keeps the theorem scoped to finite-state dispatch convergence.",
+      "divergence_notes": "",
+      "sorry_locations": [],
+      "confidence": 0.82
+    },
+    "B": {
+      "claim_id": "claim.theorem.dispatch_converges",
+      "formalizer": "B",
+      "isabelle_code": "theory Dispatch_Converges_B imports Main\\nbegin\\nlemma dispatch_converges_alt:\\n  assumes MODEL: \\\"finite dispatch_state\\\"\\n  assumes DEC: \\\"well_founded ranking\\\"\\n  shows \\\"True\\\"\\n  using MODEL DEC\\n  by simp\\nend\\n",
+      "session_name": "DispatchProofB",
+      "theory_name": "Dispatch_Converges_B",
+      "primary_theorem": "dispatch_converges_alt",
+      "definitions": [
+        "dispatch_state"
+      ],
+      "locale_name": "dispatch_context",
+      "assumptions_used": [
+        {
+          "carrier": "locale",
+          "statement": "finite dispatch_state"
+        }
+      ],
+      "back_translation": "Formalization B preserves finite-time convergence and the stable assignment endpoint.",
+      "divergence_notes": "",
+      "sorry_locations": [],
+      "confidence": 0.79
+    }
+  },
+  "verifier_outputs": {
+    "A": {
+      "claim_id": "claim.theorem.dispatch_converges",
+      "formalizer": "A",
+      "build_success": true,
+      "build_log_summary": "fixture build passed",
+      "errors": [],
+      "warnings": [],
+      "theorems_found": [
+        "dispatch_converges"
+      ],
+      "definitions_found": [
+        "dispatch_state"
+      ],
+      "locales_found": [
+        "dispatch_context"
+      ],
+      "sorry_count": 0,
+      "sorry_locations": [],
+      "oops_count": 0,
+      "dependency_count": 2,
+      "session_fingerprint": "fixture-dispatch-a",
+      "proof_status": "proof_complete",
+      "formal_artifact": {
+        "node_id": "node.formal.theorem.dispatch_converges.A",
+        "node_type": "formal_artifact",
+        "system": "isabelle_hol",
+        "artifact_kind": "theorem",
+        "identifier": "dispatch_converges",
+        "session": "DispatchProofA",
+        "theory": "Dispatch_Converges_A",
+        "status": "active",
+        "proof_status": "proof_complete"
+      }
+    },
+    "B": {
+      "claim_id": "claim.theorem.dispatch_converges",
+      "formalizer": "B",
+      "build_success": true,
+      "build_log_summary": "fixture build passed",
+      "errors": [],
+      "warnings": [],
+      "theorems_found": [
+        "dispatch_converges_alt"
+      ],
+      "definitions_found": [
+        "dispatch_state"
+      ],
+      "locales_found": [
+        "dispatch_context"
+      ],
+      "sorry_count": 0,
+      "sorry_locations": [],
+      "oops_count": 0,
+      "dependency_count": 2,
+      "session_fingerprint": "fixture-dispatch-b",
+      "proof_status": "built",
+      "formal_artifact": {
+        "node_id": "node.formal.theorem.dispatch_converges.B",
+        "node_type": "formal_artifact",
+        "system": "isabelle_hol",
+        "artifact_kind": "theorem",
+        "identifier": "dispatch_converges_alt",
+        "session": "DispatchProofB",
+        "theory": "Dispatch_Converges_B",
+        "status": "active",
+        "proof_status": "built"
+      }
+    }
+  },
+  "runner_surface": {
+    "direct_theorem_dependencies": [
+      "dispatch_context.intro",
+      "ranking_measure.decreases"
+    ],
+    "transitive_theorem_dependencies": [
+      "dispatch_context.intro",
+      "ranking_measure.decreases",
+      "wf_measure"
+    ],
+    "imported_theories": [
+      "Dispatch_Converges_A",
+      "Main"
+    ],
+    "locale_assumptions": [
+      "dispatch_context.finite_state",
+      "dispatch_context.stable_assignment"
+    ],
+    "premise_assumptions": [],
+    "oracle_ids": [],
+    "global_axiom_ids": [],
+    "reviewed_global_axiom_ids": [],
+    "reviewed_exception_ids": [],
+    "notes": [
+      "Fixture theorem trust surface present."
+    ],
+    "proof_variants": {
+      "premise_sensitivity": "stable",
+      "conclusion_perturbation": "stable",
+      "notes": [
+        "The theorem remained stable under the fixture perturbation set."
+      ]
+    }
+  },
+  "research_output": {
+    "overall_assessment": "The structured theorem note is consistent with the imported convergence narrative.",
+    "recommended_support_status": "simulation_supported",
+    "evidence_items": [
+      {
+        "evidence_kind": "simulation",
+        "result_polarity": "supports"
+      }
+    ]
+  },
+  "promotion_transitions": [
+    {
+      "target_gate": "queued",
+      "actor": "reviewer.theorem",
+      "actor_role": "reviewer",
+      "override": true,
+      "rationale": "Fixture replay queues the theorem for staged review.",
+      "notes": "Queue theorem scenario."
+    },
+    {
+      "target_gate": "research_only",
+      "actor": "reviewer.theorem",
+      "actor_role": "reviewer",
+      "override": true,
+      "rationale": "Fixture replay advances the theorem into research review.",
+      "notes": "Research gate for theorem scenario."
+    },
+    {
+      "target_gate": "dev_guarded",
+      "actor": "reviewer.theorem",
+      "actor_role": "reviewer",
+      "override": true,
+      "rationale": "Fixture replay advances the theorem into guarded development use.",
+      "notes": "Dev-guarded theorem scenario."
+    },
+    {
+      "target_gate": "certified",
+      "actor": "certifier.theorem",
+      "actor_role": "certifier",
+      "override": true,
+      "rationale": "Fixture replay certifies the theorem after independent review.",
+      "notes": "Certified theorem scenario."
+    }
+  ]
+}

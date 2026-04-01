@@ -1,0 +1,834 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/assurance-profile.schema.json",
+  "title": "AssuranceProfile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "profile_id",
+    "project_id",
+    "created_at",
+    "updated_at",
+    "claim_id",
+    "target_formal_artifact",
+    "formal_status",
+    "support_status",
+    "intent_status",
+    "gate",
+    "trust_frontier",
+    "conservativity",
+    "obligations",
+    "model_health",
+    "intent_alignment",
+    "coverage",
+    "robustness",
+    "support_profile",
+    "vector_scores",
+    "allowed_downstream",
+    "required_actions"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "profile_id": {
+      "$ref": "#/$defs/id"
+    },
+    "project_id": {
+      "$ref": "#/$defs/id"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "claim_id": {
+      "$ref": "#/$defs/id"
+    },
+    "claim_graph_ref": {
+      "$ref": "#/$defs/id"
+    },
+    "assurance_graph_ref": {
+      "$ref": "#/$defs/id"
+    },
+    "target_formal_artifact": {
+      "$ref": "#/$defs/targetFormalArtifact"
+    },
+    "formal_status": {
+      "type": "string",
+      "enum": [
+        "unformalized",
+        "skeleton_only",
+        "build_failed",
+        "build_passed_no_proof",
+        "proof_complete",
+        "counterexample_found",
+        "blocked"
+      ]
+    },
+    "support_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "literature_supported",
+        "experimentally_supported",
+        "simulation_supported",
+        "test_supported",
+        "mixed_supported",
+        "challenged",
+        "refuted"
+      ]
+    },
+    "intent_status": {
+      "type": "string",
+      "enum": [
+        "unreviewed",
+        "aligned",
+        "partially_aligned",
+        "misaligned",
+        "disputed"
+      ]
+    },
+    "gate": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "queued",
+        "research_only",
+        "dev_guarded",
+        "certified",
+        "blocked",
+        "rejected",
+        "superseded"
+      ]
+    },
+    "decision_rationale": {
+      "type": "string"
+    },
+    "trust_frontier": {
+      "$ref": "#/$defs/trustFrontier"
+    },
+    "conservativity": {
+      "$ref": "#/$defs/conservativity"
+    },
+    "obligations": {
+      "$ref": "#/$defs/obligations"
+    },
+    "model_health": {
+      "$ref": "#/$defs/modelHealth"
+    },
+    "intent_alignment": {
+      "$ref": "#/$defs/intentAlignment"
+    },
+    "coverage": {
+      "$ref": "#/$defs/coverage"
+    },
+    "robustness": {
+      "$ref": "#/$defs/robustness"
+    },
+    "support_profile": {
+      "$ref": "#/$defs/supportProfile"
+    },
+    "vector_scores": {
+      "$ref": "#/$defs/vectorScores"
+    },
+    "proofClaim": {
+      "$ref": "#/$defs/proofClaim"
+    },
+    "proofClaimBreakdown": {
+      "$ref": "#/$defs/proofClaimBreakdown"
+    },
+    "allowed_downstream": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "research",
+          "dev",
+          "release",
+          "monitoring"
+        ]
+      }
+    },
+    "required_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "supersedes_profile_id": {
+      "$ref": "#/$defs/id"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:-]+$"
+    },
+    "targetFormalArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "system",
+        "session",
+        "theory",
+        "theorem"
+      ],
+      "properties": {
+        "artifact_id": {
+          "$ref": "#/$defs/id"
+        },
+        "system": {
+          "type": "string",
+          "enum": [
+            "isabelle_hol",
+            "lean",
+            "coq",
+            "agda",
+            "other"
+          ]
+        },
+        "session": {
+          "type": "string"
+        },
+        "theory": {
+          "type": "string"
+        },
+        "theorem": {
+          "type": "string"
+        }
+      }
+    },
+    "trustFrontier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "global_axiom_dependency_count",
+        "locale_assumption_count",
+        "premise_assumption_count",
+        "oracle_dependency_count",
+        "unreviewed_import_count",
+        "transitive_dependency_count",
+        "reviewed_global_axiom_ids",
+        "oracle_ids",
+        "hotspot_artifact_ids",
+        "notes"
+      ],
+      "properties": {
+        "global_axiom_dependency_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "locale_assumption_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "premise_assumption_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "oracle_dependency_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unreviewed_import_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "transitive_dependency_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reviewed_global_axiom_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "oracle_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "hotspot_artifact_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "conservativity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "definitional_only",
+        "reviewed_global_axioms_required",
+        "compile_away_known",
+        "nondefinitional_hotspots",
+        "trusted_mechanisms",
+        "flagged_mechanisms"
+      ],
+      "properties": {
+        "definitional_only": {
+          "type": "boolean"
+        },
+        "reviewed_global_axioms_required": {
+          "type": "boolean"
+        },
+        "compile_away_known": {
+          "type": "boolean"
+        },
+        "nondefinitional_hotspots": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "trusted_mechanisms": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "flagged_mechanisms": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "obligations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sorry_count",
+        "oops_count",
+        "open_goal_count",
+        "unresolved_bridge_count",
+        "missing_backtranslation_review_count",
+        "blocking_obligations"
+      ],
+      "properties": {
+        "sorry_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "oops_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "open_goal_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unresolved_bridge_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "missing_backtranslation_review_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "blocking_obligations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "triStatus": {
+      "type": "string",
+      "enum": [
+        "untested",
+        "pass",
+        "fail",
+        "inconclusive"
+      ]
+    },
+    "fragilityStatus": {
+      "type": "string",
+      "enum": [
+        "untested",
+        "stable",
+        "fragile",
+        "inconclusive"
+      ]
+    },
+    "modelHealth": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "locale_satisfiability",
+        "countermodel_probe",
+        "vacuity_check",
+        "premise_sensitivity",
+        "conclusion_perturbation",
+        "notes"
+      ],
+      "properties": {
+        "locale_satisfiability": {
+          "$ref": "#/$defs/triStatus"
+        },
+        "countermodel_probe": {
+          "type": "string",
+          "enum": [
+            "untested",
+            "no_countermodel_found",
+            "countermodel_found",
+            "inconclusive"
+          ]
+        },
+        "vacuity_check": {
+          "$ref": "#/$defs/triStatus"
+        },
+        "premise_sensitivity": {
+          "$ref": "#/$defs/fragilityStatus"
+        },
+        "conclusion_perturbation": {
+          "$ref": "#/$defs/fragilityStatus"
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "intentAlignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "independent_formalization_count",
+        "agreement_score",
+        "backtranslation_review",
+        "paraphrase_robustness_score",
+        "semantics_guard_violations",
+        "reviewer_notes"
+      ],
+      "properties": {
+        "independent_formalization_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agreement_score": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "backtranslation_review": {
+          "type": "string",
+          "enum": [
+            "unreviewed",
+            "pass",
+            "fail",
+            "needs_revision"
+          ]
+        },
+        "paraphrase_robustness_score": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "semantics_guard_violations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reviewer_notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "formalized_subclaim_count",
+        "residual_subclaim_count",
+        "dependency_coverage_score",
+        "evidence_link_coverage_score",
+        "required_claim_ids",
+        "uncovered_claim_ids"
+      ],
+      "properties": {
+        "formalized_subclaim_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "residual_subclaim_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "dependency_coverage_score": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "evidence_link_coverage_score": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "required_claim_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "uncovered_claim_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        }
+      }
+    },
+    "robustness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "linter_finding_count",
+        "replay_status",
+        "rebuild_count",
+        "reproducibility_score",
+        "cross_tool_review_status",
+        "notes"
+      ],
+      "properties": {
+        "linter_finding_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "replay_status": {
+          "type": "string",
+          "enum": [
+            "untested",
+            "pass",
+            "fail",
+            "flaky"
+          ]
+        },
+        "rebuild_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reproducibility_score": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "cross_tool_review_status": {
+          "type": "string",
+          "enum": [
+            "not_applicable",
+            "unreviewed",
+            "pass",
+            "fail"
+          ]
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "supportProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_counts",
+        "strongest_positive_evidence_ids",
+        "strongest_negative_evidence_ids",
+        "bridge_notes"
+      ],
+      "properties": {
+        "evidence_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "experiment",
+            "literature",
+            "simulation",
+            "test_run",
+            "countermodel",
+            "manual_review"
+          ],
+          "properties": {
+            "experiment": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "literature": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "simulation": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "test_run": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "countermodel": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "manual_review": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "strongest_positive_evidence_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "strongest_negative_evidence_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "bridge_notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "vectorScores": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "trust_base_integrity",
+        "intent_alignment",
+        "evidence_support",
+        "coverage",
+        "robustness"
+      ],
+      "properties": {
+        "trust_base_integrity": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "intent_alignment": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "evidence_support": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "coverage": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "robustness": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "scheduler_score": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    },
+    "proofClaim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "score",
+        "scoreMethod",
+        "scoreVersion",
+        "scoreBreakdownRef"
+      ],
+      "properties": {
+        "score": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "scoreMethod": {
+          "type": "string"
+        },
+        "scoreVersion": {
+          "type": "string"
+        },
+        "scoreBreakdownRef": {
+          "type": "string"
+        }
+      }
+    },
+    "proofClaimArgument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "argumentId",
+        "label",
+        "polarity",
+        "nodeConfidence",
+        "relationStrength",
+        "effectiveStrength",
+        "summary"
+      ],
+      "properties": {
+        "argumentId": {
+          "$ref": "#/$defs/id"
+        },
+        "label": {
+          "type": "string"
+        },
+        "polarity": {
+          "type": "string",
+          "enum": [
+            "support",
+            "attack"
+          ]
+        },
+        "nodeConfidence": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "relationStrength": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "effectiveStrength": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "summary": {
+          "type": "string"
+        }
+      }
+    },
+    "proofClaimDimension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dimension",
+        "baseScore",
+        "finalScore",
+        "supporters",
+        "attackers"
+      ],
+      "properties": {
+        "dimension": {
+          "type": "string",
+          "enum": [
+            "trust_base_integrity",
+            "intent_alignment",
+            "evidence_support",
+            "coverage",
+            "robustness"
+          ]
+        },
+        "baseScore": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "finalScore": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "supporters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/proofClaimArgument"
+          }
+        },
+        "attackers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/proofClaimArgument"
+          }
+        }
+      }
+    },
+    "proofClaimBreakdown": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scoreMethod",
+        "scoreVersion",
+        "aggregateBaseScore",
+        "aggregateFinalScore",
+        "dimensions"
+      ],
+      "properties": {
+        "scoreMethod": {
+          "type": "string"
+        },
+        "scoreVersion": {
+          "type": "string"
+        },
+        "aggregateBaseScore": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "aggregateFinalScore": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "dimensions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/proofClaimDimension"
+          }
+        }
+      }
+    }
+  }
+}

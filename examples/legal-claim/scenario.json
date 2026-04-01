@@ -1,0 +1,365 @@
+{
+  "scenario_id": "legal-claim",
+  "name": "Legal Claim Scenario",
+  "domain": "legal",
+  "description": "Replay a legal workflow from citation-normalized import to guarded promotion.",
+  "structure_input": "Structure the imported legal excerpt into a claim graph that preserves the Article 5 and notice requirements.",
+  "target_claim_id": "claim.legal.termination_without_notice_is_invalid",
+  "ingest_payload": {
+    "claims": [
+      {
+        "id": "article5_applies",
+        "title": "Article 5 applies",
+        "statement": "Article 5 governs the dispute.",
+        "role": "statute",
+        "source_text": "Article 5 governs the dispute.",
+        "scope": "termination dispute",
+        "depth": 0
+      },
+      {
+        "id": "notice_required",
+        "title": "Notice is required",
+        "statement": "Termination requires written notice before rescission.",
+        "role": "premise",
+        "source_text": "Termination requires written notice before rescission.",
+        "scope": "termination dispute",
+        "depth": 1
+      },
+      {
+        "id": "termination_invalid",
+        "title": "Termination without notice is ineffective",
+        "statement": "Termination without written notice is ineffective.",
+        "role": "holding",
+        "source_text": "Termination without written notice is ineffective.",
+        "scope": "termination dispute",
+        "depth": 2
+      }
+    ],
+    "relations": [
+      {
+        "source_id": "termination_invalid",
+        "target_id": "article5_applies",
+        "relation_type": "supports",
+        "strength": "authoritative",
+        "rationale": "The holding applies within the Article 5 dispute framework."
+      },
+      {
+        "source_id": "termination_invalid",
+        "target_id": "notice_required",
+        "relation_type": "supports",
+        "strength": "authoritative",
+        "rationale": "The holding depends on the written-notice requirement."
+      }
+    ]
+  },
+  "claim_graph_outline": {
+    "graph_id": "cg.legal.notice",
+    "description": "Canonical legal workflow graph for the Article 5 notice scenario.",
+    "root_claim_ids": [
+      "claim.legal.termination_without_notice_is_invalid"
+    ],
+    "claims": [
+      {
+        "claim_id": "claim.legal.article5_applies",
+        "title": "Article 5 governs the dispute",
+        "nl_statement": "Article 5 governs the dispute.",
+        "normalized_statement": "The dispute falls under Article 5.",
+        "intent_gloss": "Jurisdictional scope for the legal claim.",
+        "claim_class": "enabling_claim",
+        "claim_kind": "definition_candidate",
+        "status": "queued_for_formalization",
+        "priority": 78,
+        "tags": [
+          "legal",
+          "article5"
+        ],
+        "scope_domain": "termination dispute",
+        "included_conditions": [
+          "Article 5 controls"
+        ],
+        "excluded_conditions": [
+          "other jurisdictional regimes"
+        ],
+        "must_preserve": [
+          "Article 5 applicability"
+        ],
+        "source_anchors": [
+          {
+            "source_type": "document",
+            "source_ref": "__LATEST_SOURCE_DOCUMENT_REF__",
+            "excerpt": "Article 5 governs the dispute."
+          }
+        ]
+      },
+      {
+        "claim_id": "claim.legal.notice_required",
+        "title": "Written notice is required",
+        "nl_statement": "Termination requires written notice before rescission.",
+        "normalized_statement": "The governing rule requires written notice before rescission.",
+        "intent_gloss": "Formal prerequisite for the holding.",
+        "claim_class": "assumption",
+        "claim_kind": "hypothesis",
+        "status": "candidate",
+        "downstream_kind": "research_only",
+        "priority": 82,
+        "tags": [
+          "legal",
+          "notice"
+        ],
+        "scope_domain": "termination dispute",
+        "included_conditions": [
+          "written notice"
+        ],
+        "excluded_conditions": [
+          "oral notice only"
+        ],
+        "must_preserve": [
+          "written-notice prerequisite"
+        ],
+        "source_anchors": [
+          {
+            "source_type": "document",
+            "source_ref": "__LATEST_SOURCE_DOCUMENT_REF__",
+            "excerpt": "Termination requires written notice before rescission."
+          }
+        ]
+      },
+      {
+        "claim_id": "claim.legal.termination_without_notice_is_invalid",
+        "title": "Termination without notice is ineffective",
+        "nl_statement": "Termination without written notice is ineffective.",
+        "normalized_statement": "Under Article 5 and the written-notice rule, a termination without written notice is ineffective.",
+        "intent_gloss": "Legal holding scoped to the cited authority and notice prerequisite.",
+        "claim_class": "core_claim",
+        "claim_kind": "theorem_candidate",
+        "status": "formalizing",
+        "priority": 94,
+        "tags": [
+          "legal",
+          "holding",
+          "notice"
+        ],
+        "scope_domain": "termination dispute",
+        "included_conditions": [
+          "Article 5 governs",
+          "written notice required"
+        ],
+        "excluded_conditions": [
+          "uncited equitable exceptions"
+        ],
+        "must_preserve": [
+          "ineffective termination without written notice"
+        ],
+        "forbidden_weakenings": [
+          "mere procedural warning"
+        ],
+        "independent_formalizations_required": 2,
+        "source_anchors": [
+          {
+            "source_type": "document",
+            "source_ref": "__LATEST_SOURCE_DOCUMENT_REF__",
+            "excerpt": "Termination without written notice is ineffective."
+          }
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "relation_id": "rel.legal.holding_depends_article5",
+        "from_claim_id": "claim.legal.termination_without_notice_is_invalid",
+        "to_claim_id": "claim.legal.article5_applies",
+        "relation_type": "depends_on",
+        "rationale": "The holding is scoped to disputes governed by Article 5."
+      },
+      {
+        "relation_id": "rel.legal.holding_depends_notice",
+        "from_claim_id": "claim.legal.termination_without_notice_is_invalid",
+        "to_claim_id": "claim.legal.notice_required",
+        "relation_type": "depends_on",
+        "rationale": "The holding depends on the written-notice requirement."
+      }
+    ]
+  },
+  "formalizer_outputs": {
+    "A": {
+      "claim_id": "claim.legal.termination_without_notice_is_invalid",
+      "formalizer": "A",
+      "isabelle_code": "theory Legal_Notice_A imports Main\\nbegin\\nlemma termination_without_notice_is_invalid:\\n  assumes ARTICLE5: \\\"article5_applies\\\"\\n  assumes NOTICE: \\\"written_notice_required\\\"\\n  shows \\\"True\\\"\\n  using ARTICLE5 NOTICE\\n  by simp\\nend\\n",
+      "session_name": "LegalClaimA",
+      "theory_name": "Legal_Notice_A",
+      "primary_theorem": "termination_without_notice_is_invalid",
+      "definitions": [
+        "article5_applies"
+      ],
+      "locale_name": null,
+      "assumptions_used": [
+        {
+          "carrier": "premise",
+          "statement": "written_notice_required"
+        }
+      ],
+      "back_translation": "Formalization A preserves the holding that notice is required under Article 5.",
+      "divergence_notes": "",
+      "sorry_locations": [],
+      "confidence": 0.8
+    },
+    "B": {
+      "claim_id": "claim.legal.termination_without_notice_is_invalid",
+      "formalizer": "B",
+      "isabelle_code": "theory Legal_Notice_B imports Main\\nbegin\\nlemma termination_without_notice_is_invalid_alt:\\n  assumes ARTICLE5: \\\"article5_applies\\\"\\n  assumes NOTICE: \\\"written_notice_required\\\"\\n  shows \\\"True\\\"\\n  using ARTICLE5 NOTICE\\n  by simp\\nend\\n",
+      "session_name": "LegalClaimB",
+      "theory_name": "Legal_Notice_B",
+      "primary_theorem": "termination_without_notice_is_invalid_alt",
+      "definitions": [
+        "article5_applies"
+      ],
+      "locale_name": null,
+      "assumptions_used": [
+        {
+          "carrier": "premise",
+          "statement": "written_notice_required"
+        }
+      ],
+      "back_translation": "Formalization B preserves the same holding without weakening the notice requirement.",
+      "divergence_notes": "",
+      "sorry_locations": [],
+      "confidence": 0.77
+    }
+  },
+  "verifier_outputs": {
+    "A": {
+      "claim_id": "claim.legal.termination_without_notice_is_invalid",
+      "formalizer": "A",
+      "build_success": true,
+      "build_log_summary": "fixture build passed",
+      "errors": [],
+      "warnings": [],
+      "theorems_found": [
+        "termination_without_notice_is_invalid"
+      ],
+      "definitions_found": [
+        "article5_applies"
+      ],
+      "locales_found": [],
+      "sorry_count": 0,
+      "sorry_locations": [],
+      "oops_count": 0,
+      "dependency_count": 2,
+      "session_fingerprint": "fixture-legal-a",
+      "proof_status": "proof_complete",
+      "formal_artifact": {
+        "node_id": "node.formal.legal.termination_without_notice_is_invalid.A",
+        "node_type": "formal_artifact",
+        "system": "isabelle_hol",
+        "artifact_kind": "theorem",
+        "identifier": "termination_without_notice_is_invalid",
+        "session": "LegalClaimA",
+        "theory": "Legal_Notice_A",
+        "status": "active",
+        "proof_status": "proof_complete"
+      }
+    },
+    "B": {
+      "claim_id": "claim.legal.termination_without_notice_is_invalid",
+      "formalizer": "B",
+      "build_success": true,
+      "build_log_summary": "fixture build passed",
+      "errors": [],
+      "warnings": [],
+      "theorems_found": [
+        "termination_without_notice_is_invalid_alt"
+      ],
+      "definitions_found": [
+        "article5_applies"
+      ],
+      "locales_found": [],
+      "sorry_count": 0,
+      "sorry_locations": [],
+      "oops_count": 0,
+      "dependency_count": 2,
+      "session_fingerprint": "fixture-legal-b",
+      "proof_status": "built",
+      "formal_artifact": {
+        "node_id": "node.formal.legal.termination_without_notice_is_invalid.B",
+        "node_type": "formal_artifact",
+        "system": "isabelle_hol",
+        "artifact_kind": "theorem",
+        "identifier": "termination_without_notice_is_invalid_alt",
+        "session": "LegalClaimB",
+        "theory": "Legal_Notice_B",
+        "status": "active",
+        "proof_status": "built"
+      }
+    }
+  },
+  "runner_surface": {
+    "direct_theorem_dependencies": [
+      "article5_applies.intro",
+      "written_notice_required"
+    ],
+    "transitive_theorem_dependencies": [
+      "article5_applies.intro",
+      "written_notice_required",
+      "termination_rule"
+    ],
+    "imported_theories": [
+      "Legal_Notice_A",
+      "Main"
+    ],
+    "locale_assumptions": [],
+    "premise_assumptions": [
+      "article5_applies",
+      "written_notice_required"
+    ],
+    "oracle_ids": [],
+    "global_axiom_ids": [],
+    "reviewed_global_axiom_ids": [],
+    "reviewed_exception_ids": [],
+    "notes": [
+      "Fixture legal trust surface present."
+    ],
+    "proof_variants": {
+      "premise_sensitivity": "stable",
+      "conclusion_perturbation": "stable",
+      "notes": [
+        "The legal holding remained stable under fixture perturbations."
+      ]
+    }
+  },
+  "research_output": {
+    "overall_assessment": "The imported legal excerpt supports the Article 5 notice-based holding under the stated dispute scope.",
+    "recommended_support_status": "literature_supported",
+    "evidence_items": [
+      {
+        "evidence_kind": "literature",
+        "result_polarity": "supports"
+      }
+    ]
+  },
+  "promotion_transitions": [
+    {
+      "target_gate": "queued",
+      "actor": "reviewer.legal",
+      "actor_role": "reviewer",
+      "override": true,
+      "rationale": "Fixture replay queues the legal holding for staged review.",
+      "notes": "Queue legal scenario."
+    },
+    {
+      "target_gate": "research_only",
+      "actor": "reviewer.legal",
+      "actor_role": "reviewer",
+      "override": true,
+      "rationale": "Fixture replay advances the legal holding into research review.",
+      "notes": "Research-only legal scenario."
+    },
+    {
+      "target_gate": "dev_guarded",
+      "actor": "reviewer.legal",
+      "actor_role": "reviewer",
+      "override": true,
+      "rationale": "Fixture replay allows guarded downstream use of the legal holding.",
+      "notes": "Dev-guarded legal scenario."
+    }
+  ]
+}

@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/prefix-slice-graph-v1.schema.json",
+  "title": "PrefixSliceGraphV1",
+  "description": "Graph-projection prefix slice (CNT-005). Model-visible learned projection derived from the raw trace prefix. Text projections use prefix-slice-text-v1.schema.json. Do NOT combine both projections in a single object. Do NOT include domain, router, prompt-template, corpus, split, or URI metadata.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "trace_id",
+    "step_id",
+    "state_graph",
+    "available_artifacts"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "trace_id": {
+      "$ref": "#/$defs/id",
+      "description": "Stable trace identifier. Must not be empty or a placeholder."
+    },
+    "step_id": {
+      "$ref": "#/$defs/id",
+      "description": "Step within the trace at the prefix cutoff point."
+    },
+    "state_graph": {
+      "$ref": "#/$defs/stateGraphV1",
+      "description": "Graph-native projection of the current pipeline state at prefix cutoff. No future profile, evidence, promotion, or soundness leakage."
+    },
+    "available_artifacts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of artifact identifiers available at this prefix cutoff."
+    },
+    "legal_action_mask": {
+      "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "type": "string" },
+              { "$ref": "#/$defs/actionDsl" }
+            ]
+          }
+        },
+        { "type": "null" }
+      ],
+      "description": "Subset of actions that are legal at this prefix cutoff."
+    },
+    "gold_action": {
+      "oneOf": [
+        { "$ref": "#/$defs/actionDsl" },
+        { "type": "null" }
+      ],
+      "description": "Gold-standard action for SFT training. ActionDSL object or null."
+    },
+    "omission_reason": {
+      "oneOf": [
+        { "$ref": "#/$defs/omissionReason" },
+        { "type": "null" }
+      ],
+      "description": "Why a canonical field was intentionally omitted from this derived projection."
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:-]+$"
+    },
+    "actionDsl": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action",
+        "arguments"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "description": "Canonical ActionDSL verb."
+        },
+        "action_type": {
+          "type": "string",
+          "description": "Temporary compatibility mirror of action."
+        },
+        "dsl": {
+          "type": "string",
+          "description": "Compatibility DSL string for rollout/debugging."
+        },
+        "arguments": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Canonical ActionDSL arguments keyed by frozen argument names."
+        }
+      },
+      "description": "Canonical ActionDSL object shape for model-visible prefix supervision."
+    },
+    "omissionReason": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "unsupported",
+        "cost_policy",
+        "runtime_limit"
+      ],
+      "description": "Why a canonical field was intentionally omitted from a derived projection."
+    },
+    "stateGraphV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "nodes",
+        "edges"
+      ],
+      "properties": {
+        "nodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/graphNode"
+          },
+          "description": "Graph nodes representing claims/relations at prefix cutoff."
+        },
+        "edges": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/graphEdge"
+          },
+          "description": "Graph edges representing relations at prefix cutoff."
+        }
+      },
+      "description": "StateGraphV1 -- graph-native projection of the pipeline state at prefix cutoff."
+    },
+    "graphNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "node_id",
+        "role",
+        "status"
+      ],
+      "properties": {
+        "node_id": {
+          "$ref": "#/$defs/id",
+          "description": "Stable node identifier."
+        },
+        "role": {
+          "type": "string",
+          "description": "Node role (e.g. claim, assumption)."
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status at prefix cutoff."
+        },
+        "gate": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ],
+          "description": "Assurance gate at prefix cutoff."
+        },
+        "profile_summary": {
+          "oneOf": [
+            { "type": "object" },
+            { "type": "null" }
+          ],
+          "description": "Summary of the assurance profile at prefix cutoff. Must not contain future snapshots."
+        }
+      }
+    },
+    "graphEdge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "target",
+        "relation_type"
+      ],
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/id",
+          "description": "Source node identifier."
+        },
+        "target": {
+          "$ref": "#/$defs/id",
+          "description": "Target node identifier."
+        },
+        "relation_type": {
+          "type": "string",
+          "description": "Type of the relation (e.g. dependsOn, contradicts)."
+        },
+        "strength": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ],
+          "description": "Relation strength label."
+        },
+        "is_hidden_assumption": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether this edge was surfaced by hidden assumption discovery."
+        }
+      }
+    }
+  }
+}

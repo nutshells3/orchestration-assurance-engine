@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0.0",
+  "trace_id": "trace-001",
+  "step_id": "step-001",
+  "event_type": "propose_relation",
+  "actor": "planner",
+  "before_hash": "aaa",
+  "after_hash": "bbb",
+  "changed_ids": [],
+  "verifier_delta": {}
+}

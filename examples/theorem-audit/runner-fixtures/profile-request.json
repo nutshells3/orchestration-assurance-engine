@@ -1,0 +1,97 @@
+{
+  "project_id": "project.agent_ide",
+  "claim_graph_path": "../claim-graph.json",
+  "claim_id": "claim.dispatch.driver_assignment_converges",
+  "claim_graph_ref": "cg.dispatch",
+  "assurance_graph_ref": "ag.dispatch",
+  "verifier_output": {
+    "A": {
+      "build_success": true,
+      "proof_status": "proof_complete",
+      "sorry_count": 0,
+      "oops_count": 0,
+      "open_goal_count": 0,
+      "warnings": [],
+      "session_fingerprint": "fp-a",
+      "theorems_found": [
+        "driver_assignment_converges"
+      ],
+      "formal_artifact": {
+        "node_id": "node.formal.dispatch.driver_assignment_converges",
+        "system": "isabelle_hol",
+        "session": "Dispatch",
+        "theory": "Dispatch_Model_A",
+        "identifier": "driver_assignment_converges"
+      }
+    },
+    "B": {
+      "build_success": true,
+      "proof_status": "built",
+      "sorry_count": 0,
+      "oops_count": 0,
+      "open_goal_count": 0,
+      "warnings": [],
+      "session_fingerprint": "fp-b",
+      "theorems_found": [
+        "driver_assignment_converges_alt"
+      ],
+      "formal_artifact": {
+        "node_id": "node.formal.dispatch.driver_assignment_converges.alt",
+        "system": "isabelle_hol",
+        "session": "Dispatch",
+        "theory": "Dispatch_Model_B",
+        "identifier": "driver_assignment_converges_alt"
+      }
+    }
+  },
+  "audit_output": {
+    "conservativity": {
+      "definitional_only": false,
+      "reviewed_global_axioms_required": true,
+      "compile_away_known": false,
+      "nondefinitional_hotspots": [
+        "oracle.fastforce"
+      ],
+      "trusted_mechanisms": [
+        "definition",
+        "locale",
+        "theorem"
+      ],
+      "flagged_mechanisms": [
+        "oracle"
+      ]
+    },
+    "intent_alignment": {
+      "independent_formalization_count": 2,
+      "agreement_score": 0.91,
+      "backtranslation_review": "pass",
+      "paraphrase_robustness_score": 0.84,
+      "semantics_guard_violations": [],
+      "reviewer_notes": [
+        "Fixture request uses the suspicious theorem-local audit path."
+      ]
+    },
+    "blocking_issues": [],
+    "warnings": []
+  },
+  "research_output": {
+    "overall_assessment": "Simulation supports the claim under the declared assumptions.",
+    "recommended_support_status": "simulation_supported",
+    "evidence_items": [
+      {
+        "node_id": "node.evidence.simulation.convergence_10000",
+        "node_type": "evidence",
+        "title": "10,000-run convergence simulation",
+        "summary": "Supportive simulation.",
+        "evidence_kind": "simulation",
+        "result_polarity": "supports",
+        "artifact_refs": [
+          "results/convergence_10000.json"
+        ],
+        "confidence": 0.97,
+        "status": "active"
+      }
+    ]
+  },
+  "runner_audit_request_path": "audit-request.json"
+}

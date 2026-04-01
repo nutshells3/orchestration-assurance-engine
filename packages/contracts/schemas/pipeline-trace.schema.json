@@ -1,0 +1,583 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/pipeline-trace.schema.json",
+  "title": "PipelineTraceV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "meta",
+    "source",
+    "phase1",
+    "phase2",
+    "phase3",
+    "trace_results"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "meta": {
+      "$ref": "#/$defs/traceMeta"
+    },
+    "source": {
+      "$ref": "#/$defs/traceSource"
+    },
+    "phase1": {
+      "$ref": "#/$defs/phase1"
+    },
+    "phase2": {
+      "$ref": "#/$defs/phase2"
+    },
+    "phase3": {
+      "$ref": "#/$defs/phase3"
+    },
+    "trace_results": {
+      "$ref": "#/$defs/traceResults"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:-]+$"
+    },
+    "unavailableReason": {
+      "type": "string",
+      "enum": [
+        "not_applicable",
+        "computation_failed",
+        "runtime_not_captured",
+        "exporter_not_implemented"
+      ],
+      "description": "Why an optional payload is absent (CNT-007)"
+    },
+    "traceMeta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "trace_id",
+        "schema_version",
+        "oae_commit",
+        "audit_rules_version",
+        "promotion_fsm_version",
+        "verifier_versions",
+        "source_sha256"
+      ],
+      "properties": {
+        "trace_id": {
+          "$ref": "#/$defs/id"
+        },
+        "schema_version": {
+          "type": "string",
+          "const": "1.0.0"
+        },
+        "oae_commit": {
+          "type": "string"
+        },
+        "audit_rules_version": {
+          "type": "string"
+        },
+        "promotion_fsm_version": {
+          "type": "string"
+        },
+        "verifier_versions": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "source_sha256": {
+          "type": "string"
+        }
+      }
+    },
+    "sourceUnit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "unit_id",
+        "start_char",
+        "end_char",
+        "text"
+      ],
+      "properties": {
+        "unit_id": {
+          "$ref": "#/$defs/id"
+        },
+        "start_char": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end_char": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    "traceSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_text",
+        "source_units"
+      ],
+      "properties": {
+        "source_text": {
+          "type": "string"
+        },
+        "source_units": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/sourceUnit"
+          }
+        }
+      }
+    },
+    "structuringWorkflow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "planner_action",
+        "attempts",
+        "validation_errors"
+      ],
+      "properties": {
+        "planner_action": {
+          "type": "string"
+        },
+        "attempts": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "validation_errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "candidateEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_id",
+        "proposal_id"
+      ],
+      "properties": {
+        "candidate_id": {
+          "$ref": "#/$defs/id",
+          "description": "Stable candidate identifier (CNT-004/TRC-007)"
+        },
+        "proposal_id": {
+          "$ref": "#/$defs/id",
+          "description": "Stable proposal identifier (CNT-004/TRC-007)"
+        },
+        "source_unit_refs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/id" },
+          "description": "Source units this candidate was extracted from (CNT-004)"
+        },
+        "canonical_text": {
+          "type": "string",
+          "description": "Canonical text of the candidate (CNT-004)"
+        },
+        "accepted_as": {
+          "oneOf": [
+            { "$ref": "#/$defs/id" },
+            { "type": "null" }
+          ],
+          "description": "ID of the accepted claim/relation if accepted (CNT-004)"
+        },
+        "merged_into": {
+          "oneOf": [
+            { "$ref": "#/$defs/id" },
+            { "type": "null" }
+          ],
+          "description": "ID of the target if merged with existing claim/relation (CNT-004)"
+        },
+        "reject_reason": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ],
+          "description": "Reason for rejection if rejected (CNT-004/TRC-008)"
+        },
+        "is_hard_negative": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether this is a hard-negative example for training (CNT-004/TRC-008)"
+        }
+      },
+      "description": "Enriched candidate/proposal entry with stable IDs and lineage (CNT-004)"
+    },
+    "candidateLedger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claims_proposed",
+        "claims_accepted",
+        "claims_rejected",
+        "relations_proposed",
+        "relations_accepted",
+        "relations_rejected"
+      ],
+      "properties": {
+        "claims_proposed": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/candidateEntry"
+          }
+        },
+        "claims_accepted": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/candidateEntry"
+          }
+        },
+        "claims_rejected": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/candidateEntry"
+          }
+        },
+        "relations_proposed": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/candidateEntry"
+          }
+        },
+        "relations_accepted": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/candidateEntry"
+          }
+        },
+        "relations_rejected": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/candidateEntry"
+          }
+        }
+      }
+    },
+    "phase1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claim_graph",
+        "structuring_workflow",
+        "candidate_ledger"
+      ],
+      "properties": {
+        "claim_graph": {
+          "type": "object",
+          "description": "Reference to a ClaimGraph instance"
+        },
+        "structuring_workflow": {
+          "$ref": "#/$defs/structuringWorkflow"
+        },
+        "candidate_ledger": {
+          "$ref": "#/$defs/candidateLedger"
+        }
+      }
+    },
+    "formalizationAttempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "output",
+        "sha256",
+        "assumptions",
+        "back_translation"
+      ],
+      "properties": {
+        "output": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string"
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "back_translation": {
+          "type": "string"
+        }
+      }
+    },
+    "divergence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "classification",
+        "primary_target_match",
+        "back_translation_match",
+        "code_sha_match",
+        "assumptions_only_in_a",
+        "assumptions_only_in_b"
+      ],
+      "properties": {
+        "classification": {
+          "type": "string"
+        },
+        "primary_target_match": {
+          "type": "boolean"
+        },
+        "back_translation_match": {
+          "type": "boolean"
+        },
+        "code_sha_match": {
+          "type": "boolean"
+        },
+        "assumptions_only_in_a": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "assumptions_only_in_b": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "dualFormalization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "attempt_a",
+        "attempt_b",
+        "divergence"
+      ],
+      "properties": {
+        "attempt_a": {
+          "$ref": "#/$defs/formalizationAttempt"
+        },
+        "attempt_b": {
+          "$ref": "#/$defs/formalizationAttempt"
+        },
+        "divergence": {
+          "$ref": "#/$defs/divergence"
+        }
+      }
+    },
+    "claimAudit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "trust_frontier",
+        "model_health",
+        "intent_alignment",
+        "blocking_issues"
+      ],
+      "properties": {
+        "trust_frontier": {
+          "type": "object",
+          "description": "Trust frontier snapshot"
+        },
+        "model_health": {
+          "type": "object",
+          "description": "Model health snapshot"
+        },
+        "intent_alignment": {
+          "type": "object",
+          "description": "Intent alignment snapshot"
+        },
+        "blocking_issues": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "perClaimRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dual_formalization",
+        "build_results",
+        "verifier_results",
+        "audit",
+        "profile",
+        "promotion_transitions"
+      ],
+      "properties": {
+        "dual_formalization": {
+          "$ref": "#/$defs/dualFormalization"
+        },
+        "build_results": {
+          "type": "object",
+          "description": "Build result record"
+        },
+        "verifier_results": {
+          "type": "object",
+          "description": "Verifier result record"
+        },
+        "audit": {
+          "$ref": "#/$defs/claimAudit"
+        },
+        "profile": {
+          "type": "object",
+          "description": "Reference to an AssuranceProfile instance"
+        },
+        "promotion_transitions": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "phase2Flags": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "phase2_executed",
+        "certification_eligible"
+      ],
+      "properties": {
+        "phase2_executed": {
+          "type": "boolean"
+        },
+        "certification_eligible": {
+          "type": "boolean"
+        }
+      }
+    },
+    "phase2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "per_claim",
+        "phase2_flags"
+      ],
+      "properties": {
+        "per_claim": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/perClaimRecord"
+          }
+        },
+        "phase2_flags": {
+          "$ref": "#/$defs/phase2Flags"
+        }
+      }
+    },
+    "evidenceRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "research_output",
+        "updated_profile"
+      ],
+      "properties": {
+        "research_output": {
+          "type": "object",
+          "description": "Research output record"
+        },
+        "updated_profile": {
+          "type": "object",
+          "description": "Reference to an updated AssuranceProfile instance"
+        }
+      }
+    },
+    "phase3": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence"
+      ],
+      "properties": {
+        "evidence": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/evidenceRecord"
+          }
+        }
+      }
+    },
+    "soundnessScore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "score",
+        "method",
+        "notes"
+      ],
+      "properties": {
+        "score": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "method": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "traceResults": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "forward_traces",
+        "backward_traces",
+        "gap_analysis",
+        "soundness"
+      ],
+      "properties": {
+        "forward_traces": {
+          "type": "object",
+          "description": "Forward trace records keyed by claim_id"
+        },
+        "forward_traces_unavailable_reason": {
+          "$ref": "#/$defs/unavailableReason",
+          "description": "Required when forward_traces is empty (CNT-007)"
+        },
+        "backward_traces": {
+          "type": "object",
+          "description": "Backward trace records keyed by claim_id"
+        },
+        "backward_traces_unavailable_reason": {
+          "$ref": "#/$defs/unavailableReason",
+          "description": "Required when backward_traces is empty (CNT-007)"
+        },
+        "gap_analysis": {
+          "type": "object",
+          "description": "Gap analysis results"
+        },
+        "soundness": {
+          "$ref": "#/$defs/soundnessScore"
+        },
+        "propagation_traces": {
+          "type": "array",
+          "items": { "type": "object" },
+          "description": "Propagation trace records (TRC-010)"
+        },
+        "vector_score_deltas": {
+          "type": "array",
+          "items": { "type": "object" },
+          "description": "Vector score delta records (TRC-010)"
+        }
+      }
+    }
+  }
+}

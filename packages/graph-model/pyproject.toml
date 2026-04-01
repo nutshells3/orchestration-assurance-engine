@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "formal-claim-graph-model"
+version = "0.1.0"
+description = "Canonical graph query library for Formal Claim claim and assurance graphs."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "pydantic>=2.12,<3",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/formal_claim_graph"]

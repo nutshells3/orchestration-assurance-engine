@@ -1,0 +1,261 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/pipeline-event-v2.schema.json",
+  "title": "PipelineEventV2",
+  "description": "Authoritative normalized event for the transition_log.jsonl stream (v2 dataset contract). Each line in the JSONL file must validate against this schema.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "trace_id",
+    "step_id",
+    "event_seq",
+    "phase",
+    "event_type",
+    "event_class",
+    "actor",
+    "before_hash",
+    "after_hash",
+    "changed_ids"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "2.0.0"
+    },
+    "event_id": {
+      "$ref": "#/$defs/id",
+      "description": "Stable unique identifier for this event."
+    },
+    "trace_id": {
+      "$ref": "#/$defs/id",
+      "description": "Trace this event belongs to."
+    },
+    "step_id": {
+      "$ref": "#/$defs/id",
+      "description": "Step within the trace."
+    },
+    "event_seq": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Monotonically increasing sequence number within the trace."
+    },
+    "phase": {
+      "type": "string",
+      "enum": [
+        "phase1",
+        "phase2",
+        "phase3",
+        "trace"
+      ],
+      "description": "Pipeline phase this event occurred in."
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "propose_relation",
+        "add_hidden_assumption",
+        "request_recheck",
+        "select_formalization",
+        "finalize_profile",
+        "propose_promotion",
+        "profile_recomputed",
+        "propagation_applied",
+        "gate_updated",
+        "audit_completed"
+      ],
+      "description": "Canonical event type. Controllable actions: propose_relation, add_hidden_assumption, request_recheck, select_formalization, finalize_profile, propose_promotion. Automatic consequences: profile_recomputed, propagation_applied, gate_updated, audit_completed."
+    },
+    "event_class": {
+      "$ref": "#/$defs/eventClass",
+      "description": "Whether this event is a controllable agent/user action or an automatic system consequence."
+    },
+    "actor": {
+      "type": "string",
+      "enum": [
+        "planner",
+        "formalizer",
+        "auditor",
+        "system",
+        "human"
+      ],
+      "description": "The actor role that initiated or owns this event."
+    },
+    "cause_event_id": {
+      "oneOf": [
+        { "$ref": "#/$defs/id" },
+        { "type": "null" }
+      ],
+      "description": "For automatic_consequence events: the event_id of the controllable action that caused this consequence. Null for controllable_action events."
+    },
+    "before_hash": {
+      "type": "string",
+      "description": "Hash of the relevant state before this event."
+    },
+    "after_hash": {
+      "type": "string",
+      "description": "Hash of the relevant state after this event."
+    },
+    "changed_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/id"
+      },
+      "description": "IDs of claims, relations, or other entities modified by this event."
+    },
+    "proposal": {
+      "oneOf": [
+        { "type": "object" },
+        { "type": "null" }
+      ],
+      "description": "Structured proposal payload, if this event proposes a change."
+    },
+    "accepted": {
+      "oneOf": [
+        { "type": "boolean" },
+        { "type": "null" }
+      ],
+      "description": "Whether the proposal was accepted. Null if no proposal was made."
+    },
+    "reject_reason": {
+      "oneOf": [
+        { "type": "string" },
+        { "type": "null" }
+      ],
+      "description": "Required when accepted=false. Reason for rejection."
+    },
+    "verifier_delta": {
+      "$ref": "#/$defs/verifierDelta",
+      "description": "Structured verifier state changes caused by this event."
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "event_class": { "const": "automatic_consequence" }
+        },
+        "required": ["event_class"]
+      },
+      "then": {
+        "required": ["cause_event_id"],
+        "properties": {
+          "cause_event_id": {
+            "$ref": "#/$defs/id",
+            "description": "Must be a non-null event_id when event_class is automatic_consequence."
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "accepted": { "const": false }
+        },
+        "required": ["accepted"]
+      },
+      "then": {
+        "required": ["reject_reason"],
+        "properties": {
+          "reject_reason": {
+            "type": "string",
+            "description": "Must be a non-null string when accepted is false."
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:-]+$",
+      "description": "Stable identifier. Must be non-empty and safe for use as map keys."
+    },
+    "eventClass": {
+      "type": "string",
+      "enum": [
+        "controllable_action",
+        "automatic_consequence"
+      ],
+      "description": "controllable_action: agent/user decision point (policy head target). automatic_consequence: deterministic system response (environment/verifier responsibility)."
+    },
+    "unavailableReason": {
+      "type": "string",
+      "enum": [
+        "not_applicable",
+        "computation_failed",
+        "runtime_not_captured",
+        "exporter_not_implemented"
+      ],
+      "description": "Why an optional payload is absent."
+    },
+    "verifierDelta": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "legality": {
+          "oneOf": [
+            { "type": "boolean" },
+            { "type": "null" }
+          ],
+          "description": "Whether the action was legal per state machine rules."
+        },
+        "vector_score_delta": {
+          "oneOf": [
+            { "type": "object" },
+            { "type": "null" }
+          ],
+          "description": "Structured vector score changes."
+        },
+        "vector_score_delta_unavailable_reason": {
+          "$ref": "#/$defs/unavailableReason",
+          "description": "Required when vector_score_delta is null."
+        },
+        "gate_before": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ],
+          "description": "Gate value before this event."
+        },
+        "gate_after": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ],
+          "description": "Gate value after this event."
+        },
+        "contradiction_delta": {
+          "oneOf": [
+            { "type": "object" },
+            { "type": "null" }
+          ],
+          "description": "Changes to contradiction state."
+        },
+        "hidden_assumptions_added": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            { "type": "null" }
+          ],
+          "description": "Hidden assumptions surfaced by this event."
+        },
+        "profile_recomputed": {
+          "oneOf": [
+            { "type": "boolean" },
+            { "type": "null" }
+          ],
+          "description": "Whether the assurance profile was recomputed."
+        },
+        "unavailable_reason": {
+          "$ref": "#/$defs/unavailableReason",
+          "description": "Why the verifier delta is partially or fully unavailable."
+        }
+      },
+      "description": "Structured record of verifier/environment state changes caused by this event."
+    }
+  }
+}

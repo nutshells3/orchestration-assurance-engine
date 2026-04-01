@@ -1,0 +1,281 @@
+{
+  "success": true,
+  "session_name": "Dispatch",
+  "session_dir": "<path>",
+  "target_theorem": "driver_assignment_converges",
+  "trust": {
+    "success": true,
+    "session": "Dispatch",
+    "target_theorem": "driver_assignment_converges",
+    "surface": {
+      "session": "Dispatch",
+      "target_theorem": "driver_assignment_converges",
+      "direct_theorem_dependencies": [
+        "dispatch_context.intro",
+        "finite_measure_decreases"
+      ],
+      "transitive_theorem_dependencies": [
+        "dispatch_context.intro",
+        "finite_measure_decreases",
+        "wf_measure"
+      ],
+      "dependency_edges": [
+        {
+          "source": "driver_assignment_converges",
+          "target": "dispatch_context.intro",
+          "kind": "theorem_dependency"
+        },
+        {
+          "source": "driver_assignment_converges",
+          "target": "finite_measure_decreases",
+          "kind": "theorem_dependency"
+        },
+        {
+          "source": "driver_assignment_converges",
+          "target": "finite_measure_decreases",
+          "kind": "theorem_dependency"
+        },
+        {
+          "source": "finite_measure_decreases",
+          "target": "wf_measure",
+          "kind": "theorem_dependency"
+        },
+        {
+          "source": "finite_measure_decreases",
+          "target": "wf_measure",
+          "kind": "theorem_dependency"
+        }
+      ],
+      "imported_theories": [
+        "Dispatch_Model_A",
+        "Finite_Set",
+        "Main"
+      ],
+      "imported_theory_hotspots": [
+        "node.formal.dispatch.dispatch_context"
+      ],
+      "oracle_ids": [
+        "oracle.fastforce"
+      ],
+      "global_axiom_ids": [
+        "axiom.choice"
+      ],
+      "reviewed_global_axiom_ids": [
+        "axiom.choice"
+      ],
+      "reviewed_exception_ids": [
+        "review.exception.dispatch_context"
+      ],
+      "locale_assumptions": [
+        "dispatch_context.finite_drivers",
+        "dispatch_context.total_assignment"
+      ],
+      "premise_assumptions": [
+        "premise.pending_jobs"
+      ],
+      "notes": [
+        "export trust surface present",
+        "Oracle dependencies were detected in the theorem-local closure.",
+        "Imported theories contribute hotspot artifacts to the target theorem."
+      ]
+    },
+    "export_output_dir": "<path>",
+    "dump_output_dir": "<path>",
+    "notes": []
+  },
+  "nitpick": {
+    "kind": "nitpick",
+    "session": "Dispatch_nitpick",
+    "target_theorem": "driver_assignment_converges",
+    "outcome": "no_countermodel_found",
+    "summary": "Nitpick found no countermodel.",
+    "counterexample_found": false,
+    "captured_output": "Nitpick found no counterexample after 1 step.",
+    "hints": [],
+    "workspace_dir": "<path>",
+    "build_result": {
+      "success": true,
+      "stdout": "Nitpick found no counterexample after 1 step.\n",
+      "stderr": "",
+      "return_code": 0,
+      "sorry_count": 0,
+      "oops_count": 0,
+      "sorry_locations": [],
+      "theorems": [],
+      "definitions": [],
+      "locales": [],
+      "session_fingerprint": "<session_fingerprint>",
+      "timeout_classification": "completed",
+      "duration_seconds": 0.0,
+      "command": [
+        "<path>",
+        "build",
+        "-v",
+        "-d",
+        "<path>",
+        "-d",
+        "<path>",
+        "-j",
+        "4",
+        "Dispatch_nitpick"
+      ],
+      "workspace_dir": "<path>",
+      "session_dir": "<path>",
+      "root_path": "<path>",
+      "stdout_path": "<path>",
+      "stderr_path": "<path>",
+      "artifact_paths": {
+        "stdout": "<path>",
+        "stderr": "<path>",
+        "root": "<path>"
+      }
+    },
+    "notes": []
+  },
+  "sledgehammer": {
+    "kind": "sledgehammer",
+    "session": "Dispatch_sledgehammer",
+    "target_theorem": "driver_assignment_converges",
+    "outcome": "hints_available",
+    "summary": "Sledgehammer returned replay hints.",
+    "counterexample_found": false,
+    "captured_output": "Try this: by simp",
+    "hints": [
+      "by simp"
+    ],
+    "workspace_dir": "<path>",
+    "build_result": {
+      "success": true,
+      "stdout": "Try this: by simp\n",
+      "stderr": "",
+      "return_code": 0,
+      "sorry_count": 0,
+      "oops_count": 0,
+      "sorry_locations": [],
+      "theorems": [],
+      "definitions": [],
+      "locales": [],
+      "session_fingerprint": "<session_fingerprint>",
+      "timeout_classification": "completed",
+      "duration_seconds": 0.0,
+      "command": [
+        "<path>",
+        "build",
+        "-v",
+        "-d",
+        "<path>",
+        "-d",
+        "<path>",
+        "-j",
+        "4",
+        "Dispatch_sledgehammer"
+      ],
+      "workspace_dir": "<path>",
+      "session_dir": "<path>",
+      "root_path": "<path>",
+      "stdout_path": "<path>",
+      "stderr_path": "<path>",
+      "artifact_paths": {
+        "stdout": "<path>",
+        "stderr": "<path>",
+        "root": "<path>"
+      }
+    },
+    "notes": []
+  },
+  "robustness_harness": {
+    "session": "Dispatch",
+    "target_theorem": "driver_assignment_converges",
+    "premise_results": [
+      {
+        "label": "drop guard",
+        "kind": "premise_deletion",
+        "classification": "fragile",
+        "summary": "Variant still built successfully; the theorem surface is fragile.",
+        "workspace_dir": "<path>",
+        "build_result": {
+          "success": true,
+          "stdout": "variant replayed\n",
+          "stderr": "",
+          "return_code": 0,
+          "sorry_count": 0,
+          "oops_count": 0,
+          "sorry_locations": [],
+          "theorems": [],
+          "definitions": [],
+          "locales": [],
+          "session_fingerprint": "<session_fingerprint>",
+          "timeout_classification": "completed",
+          "duration_seconds": 0.0,
+          "command": [
+            "<path>",
+            "build",
+            "-v",
+            "-d",
+            "<path>",
+            "-j",
+            "4",
+            "Dispatch_drop_guard"
+          ],
+          "workspace_dir": "<path>",
+          "session_dir": "<path>",
+          "root_path": "<path>",
+          "stdout_path": "<path>",
+          "stderr_path": "<path>",
+          "artifact_paths": {
+            "stdout": "<path>",
+            "stderr": "<path>",
+            "root": "<path>"
+          }
+        }
+      }
+    ],
+    "conclusion_results": [
+      {
+        "label": "strengthen goal",
+        "kind": "conclusion_perturbation",
+        "classification": "stable",
+        "summary": "Variant failed to replay; the theorem surface resisted the perturbation.",
+        "workspace_dir": "<path>",
+        "build_result": {
+          "success": false,
+          "stdout": "",
+          "stderr": "Failed to prove strengthened goal\n",
+          "return_code": 1,
+          "sorry_count": 0,
+          "oops_count": 0,
+          "sorry_locations": [],
+          "theorems": [],
+          "definitions": [],
+          "locales": [],
+          "session_fingerprint": "<session_fingerprint>",
+          "timeout_classification": "completed",
+          "duration_seconds": 0.0,
+          "command": [
+            "<path>",
+            "build",
+            "-v",
+            "-d",
+            "<path>",
+            "-j",
+            "4",
+            "Dispatch_strengthen_goal"
+          ],
+          "workspace_dir": "<path>",
+          "session_dir": "<path>",
+          "root_path": "<path>",
+          "stdout_path": "<path>",
+          "stderr_path": "<path>",
+          "artifact_paths": {
+            "stdout": "<path>",
+            "stderr": "<path>",
+            "root": "<path>"
+          }
+        }
+      }
+    ],
+    "premise_sensitivity": "fragile",
+    "conclusion_perturbation": "stable",
+    "notes": []
+  }
+}

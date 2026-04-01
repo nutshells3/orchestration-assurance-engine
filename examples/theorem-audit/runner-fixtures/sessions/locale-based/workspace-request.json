@@ -1,0 +1,13 @@
+{
+  "session_name": "Fixture_Locale",
+  "cleanup_on_close": true,
+  "theories": [
+    {
+      "theory_name": "Locale_Model",
+      "imports": [
+        "Main"
+      ],
+      "body": "locale dispatch_context =\n  fixes drivers :: nat\n  assumes finite_drivers: \"drivers > 0\"\n\nlemma (in dispatch_context) dispatch_context_nonempty: \"drivers > 0\"\n  using finite_drivers ."
+    }
+  ]
+}

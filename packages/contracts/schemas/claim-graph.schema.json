@@ -1,0 +1,496 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/claim-graph.schema.json",
+  "title": "ClaimGraph",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "graph_id",
+    "project_id",
+    "created_at",
+    "updated_at",
+    "claims",
+    "relations"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "graph_id": {
+      "$ref": "#/$defs/id"
+    },
+    "project_id": {
+      "$ref": "#/$defs/id"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "description": {
+      "type": "string"
+    },
+    "root_claim_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/id"
+      },
+      "uniqueItems": true
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/claim"
+      }
+    },
+    "relations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/relation"
+      }
+    },
+    "graph_policy": {
+      "$ref": "#/$defs/graphPolicy"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:-]+$"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "user",
+        "planner",
+        "claim_graph_agent",
+        "formalizer",
+        "research",
+        "dev",
+        "policy_engine",
+        "human_reviewer",
+        "system"
+      ]
+    },
+    "sourceAnchor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_type",
+        "source_ref"
+      ],
+      "properties": {
+        "source_type": {
+          "type": "string",
+          "enum": [
+            "user_message",
+            "planner_note",
+            "research_note",
+            "dev_note",
+            "document",
+            "issue",
+            "meeting_note",
+            "external_source",
+            "other"
+          ]
+        },
+        "source_ref": {
+          "type": "string"
+        },
+        "excerpt": {
+          "type": "string"
+        },
+        "span_start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "span_end": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domain",
+        "modality",
+        "included_conditions",
+        "excluded_conditions"
+      ],
+      "properties": {
+        "domain": {
+          "type": "string"
+        },
+        "modality": {
+          "type": "string",
+          "enum": [
+            "universal",
+            "existential",
+            "high_probability",
+            "average_case",
+            "worst_case",
+            "interface_contract",
+            "empirical",
+            "design_intent",
+            "optimization",
+            "other"
+          ]
+        },
+        "included_conditions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "excluded_conditions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "semanticsGuard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "must_preserve",
+        "allowed_weakenings",
+        "forbidden_weakenings",
+        "forbidden_strengthenings",
+        "backtranslation_required",
+        "independent_formalizations_required"
+      ],
+      "properties": {
+        "must_preserve": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "allowed_weakenings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "forbidden_weakenings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "forbidden_strengthenings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "backtranslation_required": {
+          "type": "boolean"
+        },
+        "independent_formalizations_required": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10
+        }
+      }
+    },
+    "claimPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowed_assumption_carriers",
+        "global_axiom_allowed",
+        "sorry_allowed_in_scratch",
+        "sorry_allowed_in_mainline"
+      ],
+      "properties": {
+        "allowed_assumption_carriers": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "premise",
+              "locale",
+              "reviewed_global_axiom"
+            ]
+          }
+        },
+        "global_axiom_allowed": {
+          "type": "boolean"
+        },
+        "sorry_allowed_in_scratch": {
+          "type": "boolean"
+        },
+        "sorry_allowed_in_mainline": {
+          "type": "boolean"
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "created_by_role",
+        "source_anchors"
+      ],
+      "properties": {
+        "created_by_role": {
+          "$ref": "#/$defs/role"
+        },
+        "source_anchors": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/sourceAnchor"
+          }
+        },
+        "last_reviewed_by_role": {
+          "$ref": "#/$defs/role"
+        },
+        "review_notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claim_id",
+        "title",
+        "nl_statement",
+        "claim_class",
+        "claim_kind",
+        "status",
+        "formalization_required",
+        "downstream_kind",
+        "scope",
+        "semantics_guard",
+        "policy",
+        "provenance",
+        "owner_role",
+        "reviewer_roles"
+      ],
+      "properties": {
+        "claim_id": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "type": "string"
+        },
+        "nl_statement": {
+          "type": "string"
+        },
+        "normalized_statement": {
+          "type": "string"
+        },
+        "intent_gloss": {
+          "type": "string"
+        },
+        "claim_class": {
+          "type": "string",
+          "enum": [
+            "core_claim",
+            "enabling_claim",
+            "assumption",
+            "metric",
+            "evaluator",
+            "policy_variable",
+            "implementation_detail",
+            "runtime_artifact",
+            "research_question",
+            "appendix"
+          ]
+        },
+        "claim_kind": {
+          "type": "string",
+          "enum": [
+            "theorem_candidate",
+            "definition_candidate",
+            "hypothesis",
+            "invariant",
+            "interface_contract",
+            "optimization_goal",
+            "empirical_generalization",
+            "evaluation_criterion",
+            "design_principle",
+            "safety_property",
+            "liveness_property",
+            "other"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "proposed",
+            "candidate",
+            "queued_for_formalization",
+            "formalizing",
+            "blocked",
+            "research_only",
+            "dev_only",
+            "certified",
+            "rejected",
+            "superseded",
+            "archived"
+          ]
+        },
+        "formalization_required": {
+          "type": "boolean"
+        },
+        "downstream_kind": {
+          "type": "string",
+          "enum": [
+            "research_only",
+            "dev_only",
+            "research_then_dev",
+            "dev_then_research",
+            "no_downstream"
+          ]
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scope": {
+          "$ref": "#/$defs/scope"
+        },
+        "semantics_guard": {
+          "$ref": "#/$defs/semanticsGuard"
+        },
+        "policy": {
+          "$ref": "#/$defs/claimPolicy"
+        },
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        },
+        "owner_role": {
+          "$ref": "#/$defs/role"
+        },
+        "reviewer_roles": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/role"
+          }
+        },
+        "supersedes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        }
+      }
+    },
+    "relation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "relation_id",
+        "from_claim_id",
+        "to_claim_id",
+        "relation_type",
+        "status"
+      ],
+      "properties": {
+        "relation_id": {
+          "$ref": "#/$defs/id"
+        },
+        "from_claim_id": {
+          "$ref": "#/$defs/id"
+        },
+        "to_claim_id": {
+          "$ref": "#/$defs/id"
+        },
+        "relation_type": {
+          "type": "string",
+          "enum": [
+            "depends_on",
+            "refines",
+            "specializes",
+            "generalizes",
+            "conflicts_with",
+            "supersedes",
+            "decomposes_into",
+            "blocks",
+            "motivates",
+            "alternative_to"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "provisional",
+            "rejected",
+            "superseded",
+            "archived"
+          ]
+        },
+        "required_for_promotion": {
+          "type": "boolean"
+        },
+        "rationale": {
+          "type": "string"
+        }
+      }
+    },
+    "graphPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "default_assumption_carrier",
+        "allow_global_axioms",
+        "require_backtranslation_review",
+        "require_dual_formalization_for_core_claims"
+      ],
+      "properties": {
+        "default_assumption_carrier": {
+          "type": "string",
+          "enum": [
+            "premise",
+            "locale"
+          ]
+        },
+        "allow_global_axioms": {
+          "type": "boolean"
+        },
+        "require_backtranslation_review": {
+          "type": "boolean"
+        },
+        "require_dual_formalization_for_core_claims": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

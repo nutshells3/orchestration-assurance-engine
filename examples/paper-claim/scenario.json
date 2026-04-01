@@ -1,0 +1,358 @@
+{
+  "scenario_id": "paper-claim",
+  "name": "Paper Claim Scenario",
+  "domain": "academic",
+  "description": "Replay an academic-paper workflow from source import to guarded promotion.",
+  "structure_input": "Structure the imported paper excerpt into a claim graph that preserves the causal latency-improvement claim and its scope.",
+  "target_claim_id": "claim.paper.guardrails_reduce_review_latency",
+  "ingest_payload": {
+    "claims": [
+      {
+        "id": "matched_workload",
+        "title": "Baseline and guarded workloads match",
+        "statement": "The baseline and guardrailed review pipelines use the same ticket stream.",
+        "role": "premise",
+        "source_text": "The baseline and guardrailed review pipelines use the same ticket stream.",
+        "scope": "review latency study",
+        "depth": 0
+      },
+      {
+        "id": "latency_improves",
+        "title": "Median latency improves",
+        "statement": "Under the guarded policy, median review latency falls from 18 minutes to 11 minutes.",
+        "role": "observation",
+        "source_text": "Under the guarded policy, median review latency falls from 18 minutes to 11 minutes.",
+        "scope": "review latency study",
+        "depth": 1
+      },
+      {
+        "id": "policy_unchanged",
+        "title": "Escalation policy remains unchanged",
+        "statement": "The escalation policy remains unchanged while the guardrail is active.",
+        "role": "premise",
+        "source_text": "The escalation policy remains unchanged while the guardrail is active.",
+        "scope": "review latency study",
+        "depth": 1
+      }
+    ],
+    "relations": [
+      {
+        "source_id": "latency_improves",
+        "target_id": "matched_workload",
+        "relation_type": "supports",
+        "strength": "inductive",
+        "rationale": "The improvement claim depends on matched workloads."
+      },
+      {
+        "source_id": "latency_improves",
+        "target_id": "policy_unchanged",
+        "relation_type": "supports",
+        "strength": "inductive",
+        "rationale": "The improvement claim remains scoped to unchanged escalation policy."
+      }
+    ]
+  },
+  "claim_graph_outline": {
+    "graph_id": "cg.paper.guardrails",
+    "description": "Canonical academic workflow graph for the guardrail latency paper excerpt.",
+    "root_claim_ids": [
+      "claim.paper.guardrails_reduce_review_latency"
+    ],
+    "claims": [
+      {
+        "claim_id": "claim.paper.matched_workload",
+        "title": "Workloads are matched",
+        "nl_statement": "The baseline and guardrailed review pipelines use the same ticket stream.",
+        "normalized_statement": "The evaluation compares guardrailed and baseline review on matched ticket streams.",
+        "intent_gloss": "Scope guard that keeps the comparison fair.",
+        "claim_class": "enabling_claim",
+        "claim_kind": "definition_candidate",
+        "status": "queued_for_formalization",
+        "priority": 72,
+        "tags": [
+          "paper",
+          "evaluation"
+        ],
+        "scope_domain": "review latency study",
+        "included_conditions": [
+          "matched ticket stream"
+        ],
+        "excluded_conditions": [
+          "shifted workload composition"
+        ],
+        "must_preserve": [
+          "same ticket stream"
+        ],
+        "source_anchors": [
+          {
+            "source_type": "document",
+            "source_ref": "__LATEST_SOURCE_DOCUMENT_REF__",
+            "excerpt": "The baseline and guardrailed review pipelines use the same ticket stream."
+          }
+        ]
+      },
+      {
+        "claim_id": "claim.paper.policy_unchanged",
+        "title": "Escalation policy is unchanged",
+        "nl_statement": "The escalation policy remains unchanged while the guardrail is active.",
+        "normalized_statement": "The guardrail intervention does not alter the escalation policy during evaluation.",
+        "intent_gloss": "Separates routing policy from guardrail effect.",
+        "claim_class": "assumption",
+        "claim_kind": "hypothesis",
+        "status": "candidate",
+        "downstream_kind": "research_only",
+        "priority": 70,
+        "tags": [
+          "paper",
+          "policy"
+        ],
+        "scope_domain": "review latency study",
+        "included_conditions": [
+          "same escalation policy"
+        ],
+        "excluded_conditions": [
+          "policy rewrite during experiment"
+        ],
+        "must_preserve": [
+          "no escalation-policy drift"
+        ],
+        "source_anchors": [
+          {
+            "source_type": "document",
+            "source_ref": "__LATEST_SOURCE_DOCUMENT_REF__",
+            "excerpt": "The escalation policy remains unchanged while the guardrail is active."
+          }
+        ]
+      },
+      {
+        "claim_id": "claim.paper.guardrails_reduce_review_latency",
+        "title": "Guardrails reduce review latency",
+        "nl_statement": "Under the guarded policy, median review latency falls from 18 minutes to 11 minutes.",
+        "normalized_statement": "Under matched workloads and unchanged escalation policy, the guarded review pipeline reduces median review latency relative to baseline.",
+        "intent_gloss": "Causal performance claim scoped to the stated study design.",
+        "claim_class": "core_claim",
+        "claim_kind": "theorem_candidate",
+        "status": "formalizing",
+        "priority": 92,
+        "tags": [
+          "paper",
+          "latency",
+          "guardrails"
+        ],
+        "scope_domain": "review latency study",
+        "included_conditions": [
+          "matched ticket stream",
+          "unchanged escalation policy"
+        ],
+        "excluded_conditions": [
+          "cross-dataset generalization"
+        ],
+        "must_preserve": [
+          "latency decreases under guardrails",
+          "comparison stays scoped to the study design"
+        ],
+        "forbidden_weakenings": [
+          "mere anecdotal improvement"
+        ],
+        "independent_formalizations_required": 2,
+        "source_anchors": [
+          {
+            "source_type": "document",
+            "source_ref": "__LATEST_SOURCE_DOCUMENT_REF__",
+            "excerpt": "Under the guarded policy, median review latency falls from 18 minutes to 11 minutes."
+          }
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "relation_id": "rel.paper.latency_depends_workload",
+        "from_claim_id": "claim.paper.guardrails_reduce_review_latency",
+        "to_claim_id": "claim.paper.matched_workload",
+        "relation_type": "depends_on",
+        "rationale": "The latency claim relies on workload comparability."
+      },
+      {
+        "relation_id": "rel.paper.latency_depends_policy",
+        "from_claim_id": "claim.paper.guardrails_reduce_review_latency",
+        "to_claim_id": "claim.paper.policy_unchanged",
+        "relation_type": "depends_on",
+        "rationale": "The latency claim is scoped to an unchanged escalation policy."
+      }
+    ]
+  },
+  "formalizer_outputs": {
+    "A": {
+      "claim_id": "claim.paper.guardrails_reduce_review_latency",
+      "formalizer": "A",
+      "isabelle_code": "theory Guardrail_Paper_A imports Main\\nbegin\\nlemma guardrails_reduce_review_latency:\\n  assumes MATCHED: \\\"matched_workload\\\"\\n  assumes POLICY: \\\"escalation_policy_constant\\\"\\n  shows \\\"True\\\"\\n  using MATCHED POLICY\\n  by simp\\nend\\n",
+      "session_name": "PaperClaimA",
+      "theory_name": "Guardrail_Paper_A",
+      "primary_theorem": "guardrails_reduce_review_latency",
+      "definitions": [
+        "matched_workload"
+      ],
+      "locale_name": null,
+      "assumptions_used": [
+        {
+          "carrier": "premise",
+          "statement": "matched_workload"
+        }
+      ],
+      "back_translation": "Formalization A preserves the matched-workload causal comparison.",
+      "divergence_notes": "",
+      "sorry_locations": [],
+      "confidence": 0.76
+    },
+    "B": {
+      "claim_id": "claim.paper.guardrails_reduce_review_latency",
+      "formalizer": "B",
+      "isabelle_code": "theory Guardrail_Paper_B imports Main\\nbegin\\nlemma guardrails_reduce_review_latency_alt:\\n  assumes MATCHED: \\\"matched_workload\\\"\\n  assumes POLICY: \\\"escalation_policy_constant\\\"\\n  shows \\\"True\\\"\\n  using MATCHED POLICY\\n  by simp\\nend\\n",
+      "session_name": "PaperClaimB",
+      "theory_name": "Guardrail_Paper_B",
+      "primary_theorem": "guardrails_reduce_review_latency_alt",
+      "definitions": [
+        "matched_workload"
+      ],
+      "locale_name": null,
+      "assumptions_used": [
+        {
+          "carrier": "premise",
+          "statement": "matched_workload"
+        }
+      ],
+      "back_translation": "Formalization B keeps the claim scoped to unchanged escalation policy and matched workloads.",
+      "divergence_notes": "",
+      "sorry_locations": [],
+      "confidence": 0.74
+    }
+  },
+  "verifier_outputs": {
+    "A": {
+      "claim_id": "claim.paper.guardrails_reduce_review_latency",
+      "formalizer": "A",
+      "build_success": true,
+      "build_log_summary": "fixture build passed",
+      "errors": [],
+      "warnings": [],
+      "theorems_found": [
+        "guardrails_reduce_review_latency"
+      ],
+      "definitions_found": [
+        "matched_workload"
+      ],
+      "locales_found": [],
+      "sorry_count": 0,
+      "sorry_locations": [],
+      "oops_count": 0,
+      "dependency_count": 2,
+      "session_fingerprint": "fixture-paper-a",
+      "proof_status": "proof_complete",
+      "formal_artifact": {
+        "node_id": "node.formal.paper.guardrails_reduce_review_latency.A",
+        "node_type": "formal_artifact",
+        "system": "isabelle_hol",
+        "artifact_kind": "theorem",
+        "identifier": "guardrails_reduce_review_latency",
+        "session": "PaperClaimA",
+        "theory": "Guardrail_Paper_A",
+        "status": "active",
+        "proof_status": "proof_complete"
+      }
+    },
+    "B": {
+      "claim_id": "claim.paper.guardrails_reduce_review_latency",
+      "formalizer": "B",
+      "build_success": true,
+      "build_log_summary": "fixture build passed",
+      "errors": [],
+      "warnings": [],
+      "theorems_found": [
+        "guardrails_reduce_review_latency_alt"
+      ],
+      "definitions_found": [
+        "matched_workload"
+      ],
+      "locales_found": [],
+      "sorry_count": 0,
+      "sorry_locations": [],
+      "oops_count": 0,
+      "dependency_count": 2,
+      "session_fingerprint": "fixture-paper-b",
+      "proof_status": "built",
+      "formal_artifact": {
+        "node_id": "node.formal.paper.guardrails_reduce_review_latency.B",
+        "node_type": "formal_artifact",
+        "system": "isabelle_hol",
+        "artifact_kind": "theorem",
+        "identifier": "guardrails_reduce_review_latency_alt",
+        "session": "PaperClaimB",
+        "theory": "Guardrail_Paper_B",
+        "status": "active",
+        "proof_status": "built"
+      }
+    }
+  },
+  "runner_surface": {
+    "direct_theorem_dependencies": [
+      "matched_workload.intro",
+      "escalation_policy_constant"
+    ],
+    "transitive_theorem_dependencies": [
+      "matched_workload.intro",
+      "escalation_policy_constant",
+      "median_latency"
+    ],
+    "imported_theories": [
+      "Guardrail_Paper_A",
+      "Main"
+    ],
+    "locale_assumptions": [],
+    "premise_assumptions": [
+      "matched_workload",
+      "escalation_policy_constant"
+    ],
+    "oracle_ids": [],
+    "global_axiom_ids": [],
+    "reviewed_global_axiom_ids": [],
+    "reviewed_exception_ids": [],
+    "notes": [
+      "Fixture paper trust surface present."
+    ],
+    "proof_variants": {
+      "premise_sensitivity": "stable",
+      "conclusion_perturbation": "stable",
+      "notes": [
+        "The paper claim remained stable under fixture perturbations."
+      ]
+    }
+  },
+  "research_output": {
+    "overall_assessment": "The imported paper excerpt supports the guarded-latency claim under the stated study design.",
+    "recommended_support_status": "literature_supported",
+    "evidence_items": [
+      {
+        "evidence_kind": "literature",
+        "result_polarity": "supports"
+      }
+    ]
+  },
+  "promotion_transitions": [
+    {
+      "target_gate": "queued",
+      "actor": "reviewer.paper",
+      "actor_role": "reviewer",
+      "override": true,
+      "rationale": "Fixture replay queues the paper claim for study review.",
+      "notes": "Queue paper scenario."
+    },
+    {
+      "target_gate": "research_only",
+      "actor": "reviewer.paper",
+      "actor_role": "reviewer",
+      "override": true,
+      "rationale": "Fixture replay keeps the paper claim in research-only circulation.",
+      "notes": "Research-only paper scenario."
+    }
+  ]
+}

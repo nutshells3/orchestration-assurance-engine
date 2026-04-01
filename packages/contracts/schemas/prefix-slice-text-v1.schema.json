@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/prefix-slice-text-v1.schema.json",
+  "title": "PrefixSliceTextV1",
+  "description": "Text-projection prefix slice (CNT-004). Model-visible learned projection derived from the raw trace prefix. Graph projections use prefix-slice-graph-v1.schema.json. Do NOT combine both projections in a single object. Do NOT include domain, router, prompt-template, corpus, split, or URI metadata.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "trace_id",
+    "step_id",
+    "state_text",
+    "available_artifacts"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "trace_id": {
+      "$ref": "#/$defs/id",
+      "description": "Stable trace identifier. Must not be empty or a placeholder."
+    },
+    "step_id": {
+      "$ref": "#/$defs/id",
+      "description": "Step within the trace at the prefix cutoff point."
+    },
+    "state_text": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Domain-free canonical serialization of the current pipeline state at prefix cutoff. Must be non-empty. No domain, router, prompt-template, or corpus metadata."
+    },
+    "available_artifacts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of artifact identifiers available at this prefix cutoff."
+    },
+    "legal_action_mask": {
+      "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "type": "string" },
+              { "$ref": "#/$defs/actionDsl" }
+            ]
+          }
+        },
+        { "type": "null" }
+      ],
+      "description": "Subset of actions that are legal at this prefix cutoff."
+    },
+    "gold_action": {
+      "oneOf": [
+        { "$ref": "#/$defs/actionDsl" },
+        { "type": "null" }
+      ],
+      "description": "Gold-standard action for SFT training. ActionDSL object or null."
+    },
+    "omission_reason": {
+      "oneOf": [
+        { "$ref": "#/$defs/omissionReason" },
+        { "type": "null" }
+      ],
+      "description": "Why a canonical field was intentionally omitted from this derived projection."
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:-]+$"
+    },
+    "actionDsl": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action",
+        "arguments"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "description": "Canonical ActionDSL verb."
+        },
+        "action_type": {
+          "type": "string",
+          "description": "Temporary compatibility mirror of action."
+        },
+        "dsl": {
+          "type": "string",
+          "description": "Compatibility DSL string for rollout/debugging."
+        },
+        "arguments": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Canonical ActionDSL arguments keyed by frozen argument names."
+        }
+      },
+      "description": "Canonical ActionDSL object shape for model-visible prefix supervision."
+    },
+    "omissionReason": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "unsupported",
+        "cost_policy",
+        "runtime_limit"
+      ],
+      "description": "Why a canonical field was intentionally omitted from a derived projection."
+    }
+  }
+}

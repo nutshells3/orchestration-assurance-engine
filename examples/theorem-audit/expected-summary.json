@@ -1,0 +1,10 @@
+{
+  "scenario_id": "theorem-audit",
+  "domain": "formal_proof",
+  "target_claim_id": "claim.theorem.dispatch_converges",
+  "source_document_kind": "local_file",
+  "minimum_claim_count": 3,
+  "minimum_reference_count": 1,
+  "minimum_assurance_link_count": 1,
+  "final_promotion_gate": "certified"
+}

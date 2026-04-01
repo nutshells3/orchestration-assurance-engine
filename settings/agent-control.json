@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "contract_path": "docs/product/agent-runtime-contract.md",
+  "settings_path": "settings/agent-control.json",
+  "roles": {
+    "executor_agent": "codex",
+    "audit_agent": "claude",
+    "executor_scope": "implementation and workflow execution",
+    "audit_scope": "design review, acceptance audit, and release review"
+  },
+  "codex": {
+    "model": "gpt-5.4",
+    "model_reasoning_effort": "high",
+    "plan_mode_reasoning_effort": "high",
+    "personality": "pragmatic",
+    "data_dir": ".tmp/codex-data",
+    "instructions": [
+      "Keep services/engine as the system of record.",
+      "Keep services/mcp-server and apps/cli thin.",
+      "Route proof execution only through the FWP seam; backend runtimes belong to proof-assistant."
+    ],
+    "preferred_commands": [
+      "python scripts/dev/check_repo.py --mode lint",
+      "python scripts/dev/check_repo.py --mode test",
+      "python scripts/dev/sync_agent_settings.py",
+      "python scripts/release/replay_scenarios.py",
+      "python scripts/release/build_release_artifacts.py",
+      "python scripts/release/smoke_release.py"
+    ],
+    "preferred_mcp_tools": [
+      "project.create",
+      "project.open",
+      "project.list",
+      "document.ingest",
+      "claim.structure",
+      "formalize.dual",
+      "audit.run",
+      "profile.recompute",
+      "promotion.transition",
+      "trace.export",
+      "prefix.extract",
+      "proof.run.start",
+      "job.get",
+      "job.cancel",
+      "job.kill"
+    ],
+    "skill_paths": [
+      ".codex/skills/formal-claim-operator",
+      ".codex/skills/formal-claim-release"
+    ],
+    "mcp_server_command": "python",
+    "mcp_server_args": [
+      "scripts/dev/run_uv.py",
+      "run",
+      "--directory",
+      "services/mcp-server",
+      "formal-claim-mcp-server"
+    ]
+  },
+  "claude": {
+    "skill_paths": [
+      ".claude/skills/formal-claim-operator",
+      ".claude/skills/formal-claim-release"
+    ],
+    "permissions": [
+      "Bash(python scripts/dev/check_repo.py:*)",
+      "Bash(python scripts/dev/sync_agent_settings.py:*)",
+      "Bash(python scripts/release/replay_scenarios.py:*)",
+      "Bash(python scripts/release/build_release_artifacts.py:*)",
+      "Bash(python scripts/release/smoke_release.py:*)",
+      "Bash(cargo:*)"
+    ]
+  }
+}

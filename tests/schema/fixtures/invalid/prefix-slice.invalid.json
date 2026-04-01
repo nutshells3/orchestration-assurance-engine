@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0.0",
+  "trace_id": "trace-001",
+  "step_id": "step-001",
+  "state_text": "claim_graph={c1: proposed}",
+  "available_artifacts": [],
+  "future_field": "should_be_rejected_by_additionalProperties_false"
+}

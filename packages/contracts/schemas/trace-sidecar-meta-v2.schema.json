@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/trace-sidecar-meta-v2.schema.json",
+  "title": "TraceSidecarMetaV2",
+  "description": "Sidecar metadata for a trace run. This is the ONLY place where domain metadata lives. Model-visible artifacts (trace.json, transition_log.jsonl, PrefixSliceTextV1, PrefixSliceGraphV1) must NOT contain these fields.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "trace_id",
+    "source_domain"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "2.0.0"
+    },
+    "trace_id": {
+      "$ref": "#/$defs/id",
+      "description": "Stable trace identifier matching the associated trace.json."
+    },
+    "source_domain": {
+      "type": "string",
+      "description": "Domain tag for sampling/analysis. Never exposed to model-visible artifacts."
+    },
+    "source_uri": {
+      "oneOf": [
+        { "type": "string" },
+        { "type": "null" }
+      ],
+      "description": "URI of the source document or corpus entry."
+    },
+    "corpus_name": {
+      "oneOf": [
+        { "type": "string" },
+        { "type": "null" }
+      ],
+      "description": "Name of the corpus this trace was sampled from."
+    },
+    "license": {
+      "oneOf": [
+        { "type": "string" },
+        { "type": "null" }
+      ],
+      "description": "License governing the source material."
+    },
+    "split": {
+      "oneOf": [
+        { "type": "string" },
+        { "type": "null" }
+      ],
+      "description": "Dataset split (train/val/test) for sampling control."
+    },
+    "notes": {
+      "oneOf": [
+        { "type": "object" },
+        { "type": "null" }
+      ],
+      "description": "Freeform operator notes. Never exposed to model-visible artifacts."
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:-]+$"
+    }
+  }
+}

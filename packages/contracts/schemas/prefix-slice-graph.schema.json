@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/prefix-slice-graph.schema.json",
+  "title": "PrefixSliceGraphV1",
+  "description": "Graph-projection prefix slice (CNT-005/PFX-006). Text projections use prefix-slice.schema.json. Do NOT combine both projections in a single mutable object.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "trace_id",
+    "step_id",
+    "state_graph",
+    "available_artifacts"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "trace_id": {
+      "$ref": "#/$defs/id"
+    },
+    "step_id": {
+      "$ref": "#/$defs/id"
+    },
+    "state_graph": {
+      "$ref": "#/$defs/stateGraphV1",
+      "description": "Graph-native projection of the current pipeline state at prefix cutoff"
+    },
+    "available_artifacts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "legal_action_mask": {
+      "oneOf": [
+        {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        { "type": "null" }
+      ]
+    },
+    "gold_action": {
+      "oneOf": [
+        { "type": "object" },
+        { "type": "null" }
+      ],
+      "description": "Gold-standard action for SFT training only"
+    },
+    "omission_reason": {
+      "oneOf": [
+        { "$ref": "#/$defs/omissionReason" },
+        { "type": "null" }
+      ],
+      "description": "Why a canonical field was intentionally omitted (CNT-007)"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:-]+$"
+    },
+    "omissionReason": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "unsupported",
+        "cost_policy",
+        "runtime_limit"
+      ],
+      "description": "Why a canonical field was intentionally omitted from a derived manifest (CNT-007)"
+    },
+    "stateGraphV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "nodes",
+        "edges"
+      ],
+      "properties": {
+        "nodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/graphNode"
+          },
+          "description": "Graph nodes representing claims/relations at prefix cutoff"
+        },
+        "edges": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/graphEdge"
+          },
+          "description": "Graph edges representing relations at prefix cutoff"
+        }
+      },
+      "description": "StateGraphV1 -- graph-native projection (CNT-005/PFX-006)"
+    },
+    "graphNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "node_id",
+        "role",
+        "status"
+      ],
+      "properties": {
+        "node_id": {
+          "$ref": "#/$defs/id"
+        },
+        "role": {
+          "type": "string",
+          "description": "Node role (e.g. claim, assumption)"
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status at prefix cutoff"
+        },
+        "gate": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ]
+        },
+        "profile_summary": {
+          "oneOf": [
+            { "type": "object" },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "graphEdge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "target",
+        "relation_type"
+      ],
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/id"
+        },
+        "target": {
+          "$ref": "#/$defs/id"
+        },
+        "relation_type": {
+          "type": "string"
+        },
+        "strength": {
+          "oneOf": [
+            { "type": "number" },
+            { "type": "null" }
+          ]
+        },
+        "is_hidden_assumption": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+}

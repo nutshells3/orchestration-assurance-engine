@@ -1,0 +1,103 @@
+{
+  "schema_version": "1.0.0",
+  "profile_id": "profile.invalid",
+  "project_id": "project.invalid",
+  "created_at": "2026-03-20T00:00:00Z",
+  "updated_at": "2026-03-20T00:00:00Z",
+  "claim_id": "claim.invalid",
+  "target_formal_artifact": {
+    "artifact_id": "artifact.invalid",
+    "system": "isabelle_hol",
+    "session": "Invalid",
+    "theory": "Invalid",
+    "theorem": "invalid"
+  },
+  "formal_status": "proof_complete",
+  "support_status": "simulation_supported",
+  "intent_status": "aligned",
+  "gate": "certified",
+  "trust_frontier": {
+    "global_axiom_dependency_count": 0,
+    "locale_assumption_count": 0,
+    "premise_assumption_count": 0,
+    "oracle_dependency_count": 0,
+    "unreviewed_import_count": 0,
+    "transitive_dependency_count": 0,
+    "reviewed_global_axiom_ids": [],
+    "oracle_ids": [],
+    "hotspot_artifact_ids": [],
+    "notes": []
+  },
+  "conservativity": {
+    "definitional_only": true,
+    "reviewed_global_axioms_required": false,
+    "compile_away_known": true,
+    "nondefinitional_hotspots": [],
+    "trusted_mechanisms": [],
+    "flagged_mechanisms": []
+  },
+  "obligations": {
+    "sorry_count": 0,
+    "oops_count": 0,
+    "open_goal_count": 0,
+    "unresolved_bridge_count": 0,
+    "missing_backtranslation_review_count": 0,
+    "blocking_obligations": []
+  },
+  "model_health": {
+    "locale_satisfiability": "pass",
+    "countermodel_probe": "no_countermodel_found",
+    "vacuity_check": "pass",
+    "premise_sensitivity": "stable",
+    "conclusion_perturbation": "stable",
+    "notes": []
+  },
+  "intent_alignment": {
+    "independent_formalization_count": 1,
+    "agreement_score": 1.0,
+    "backtranslation_review": "pass",
+    "paraphrase_robustness_score": 1.0,
+    "semantics_guard_violations": [],
+    "reviewer_notes": []
+  },
+  "coverage": {
+    "formalized_subclaim_count": 0,
+    "residual_subclaim_count": 0,
+    "dependency_coverage_score": 1.0,
+    "evidence_link_coverage_score": 1.0,
+    "required_claim_ids": [],
+    "uncovered_claim_ids": []
+  },
+  "robustness": {
+    "linter_finding_count": 0,
+    "replay_status": "pass",
+    "rebuild_count": 0,
+    "reproducibility_score": 1.0,
+    "cross_tool_review_status": "not_applicable",
+    "notes": []
+  },
+  "support_profile": {
+    "evidence_counts": {
+      "experiment": 0,
+      "literature": 0,
+      "simulation": 0,
+      "test_run": 0,
+      "countermodel": 0,
+      "manual_review": 0
+    },
+    "strongest_positive_evidence_ids": [],
+    "strongest_negative_evidence_ids": [],
+    "bridge_notes": []
+  },
+  "vector_scores": {
+    "trust_base_integrity": 100,
+    "intent_alignment": 100,
+    "evidence_support": 100,
+    "coverage": 100,
+    "robustness": 100
+  },
+  "allowed_downstream": [
+    "ship"
+  ],
+  "required_actions": []
+}

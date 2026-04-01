@@ -1,0 +1,1000 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/pipeline-trace-v2.schema.json",
+  "title": "PipelineTraceV2",
+  "description": "Authoritative raw trace snapshot for one complete OAE execution (v2 dataset contract).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "meta",
+    "source",
+    "phase1",
+    "phase2",
+    "phase3",
+    "trace_results"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "2.0.0"
+    },
+    "meta": {
+      "$ref": "#/$defs/traceMeta"
+    },
+    "source": {
+      "$ref": "#/$defs/traceSource"
+    },
+    "phase1": {
+      "$ref": "#/$defs/phase1"
+    },
+    "phase2": {
+      "$ref": "#/$defs/phase2"
+    },
+    "phase3": {
+      "$ref": "#/$defs/phase3"
+    },
+    "trace_results": {
+      "$ref": "#/$defs/traceResults"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:-]+$",
+      "description": "Stable identifier. Must be non-empty and safe for use as map keys."
+    },
+    "unavailableReason": {
+      "type": "string",
+      "enum": [
+        "not_applicable",
+        "computation_failed",
+        "runtime_not_captured",
+        "exporter_not_implemented"
+      ],
+      "description": "Why an optional payload is absent. Required when an optional section is empty or null."
+    },
+    "traceMeta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "trace_id",
+        "schema_version",
+        "oae_commit",
+        "audit_rules_version",
+        "promotion_fsm_version",
+        "verifier_versions",
+        "source_sha256"
+      ],
+      "properties": {
+        "trace_id": {
+          "$ref": "#/$defs/id",
+          "description": "Globally unique trace identifier."
+        },
+        "schema_version": {
+          "type": "string",
+          "const": "2.0.0"
+        },
+        "oae_commit": {
+          "type": "string",
+          "description": "Git commit SHA of the OAE engine that produced this trace."
+        },
+        "audit_rules_version": {
+          "type": "string",
+          "description": "Version of the audit-rules package used."
+        },
+        "promotion_fsm_version": {
+          "type": "string",
+          "description": "Version of the promotion state machine definition used."
+        },
+        "verifier_versions": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Map of verifier name to version string for every verifier invoked."
+        },
+        "source_sha256": {
+          "type": "string",
+          "description": "SHA-256 hash of the raw source_text."
+        }
+      }
+    },
+    "sourceUnit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "unit_id",
+        "start_char",
+        "end_char",
+        "text"
+      ],
+      "properties": {
+        "unit_id": {
+          "$ref": "#/$defs/id",
+          "description": "Stable unit identifier for source-unit grounding."
+        },
+        "start_char": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Inclusive start character offset within source_text."
+        },
+        "end_char": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Exclusive end character offset within source_text."
+        },
+        "text": {
+          "type": "string",
+          "description": "The source unit text span."
+        }
+      }
+    },
+    "traceSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_text",
+        "source_units"
+      ],
+      "properties": {
+        "source_text": {
+          "type": "string",
+          "description": "Full source document text."
+        },
+        "source_units": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/sourceUnit"
+          },
+          "description": "Segmented source units with character offsets into source_text."
+        }
+      }
+    },
+    "claimNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "node_id",
+        "type",
+        "text"
+      ],
+      "properties": {
+        "node_id": {
+          "$ref": "#/$defs/id"
+        },
+        "type": {
+          "type": "string",
+          "description": "Node type: claim, evidence, hidden_assumption, etc."
+        },
+        "text": {
+          "type": "string"
+        },
+        "canonical_text": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ]
+        },
+        "status": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ]
+        },
+        "lifecycle": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ]
+        },
+        "confidence": {
+          "oneOf": [
+            { "type": "number" },
+            { "type": "null" }
+          ]
+        },
+        "source_unit_refs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/id" },
+          "description": "References to source units this node was extracted from."
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Descriptive tags. Must NOT contain domain-leak values (tracer_domain, scope.domain, etc.)."
+        }
+      }
+    },
+    "claimEdge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "edge_id",
+        "src",
+        "tgt",
+        "relation_type"
+      ],
+      "properties": {
+        "edge_id": {
+          "$ref": "#/$defs/id"
+        },
+        "src": {
+          "$ref": "#/$defs/id"
+        },
+        "tgt": {
+          "$ref": "#/$defs/id"
+        },
+        "relation_type": {
+          "type": "string"
+        },
+        "strength": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ]
+        },
+        "weight": {
+          "oneOf": [
+            { "type": "number" },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "claimGraph": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claims",
+        "relations"
+      ],
+      "properties": {
+        "claims": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/claimNode" },
+          "description": "All claim/evidence/hidden-assumption nodes."
+        },
+        "relations": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/claimEdge" },
+          "description": "All typed edges between nodes."
+        }
+      },
+      "description": "Structured claim graph with typed nodes and edges."
+    },
+    "structuringWorkflow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "planner_action",
+        "attempts",
+        "validation_errors"
+      ],
+      "properties": {
+        "planner_action": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ],
+          "description": "The planner action that initiated structuring."
+        },
+        "attempts": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "description": "Structuring attempt records."
+        },
+        "validation_errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Validation errors encountered during structuring."
+        }
+      }
+    },
+    "claimCandidateEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_id",
+        "proposal_id",
+        "canonical_text",
+        "raw_text",
+        "type",
+        "source_unit_refs",
+        "accepted"
+      ],
+      "properties": {
+        "candidate_id": {
+          "$ref": "#/$defs/id",
+          "description": "Stable candidate identifier."
+        },
+        "proposal_id": {
+          "$ref": "#/$defs/id",
+          "description": "Stable proposal lineage identifier."
+        },
+        "canonical_text": {
+          "type": "string",
+          "description": "Canonicalized claim text."
+        },
+        "raw_text": {
+          "type": "string",
+          "description": "Original claim text before canonicalization."
+        },
+        "type": {
+          "type": "string",
+          "description": "Dataset-facing semantic type for this claim candidate."
+        },
+        "source_unit_refs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/id" },
+          "description": "Source units this candidate was extracted from."
+        },
+        "accepted": {
+          "type": "boolean",
+          "description": "Whether the candidate was admitted into the final phase1 graph."
+        },
+        "accepted_as": {
+          "oneOf": [
+            { "$ref": "#/$defs/id" },
+            { "type": "null" }
+          ],
+          "description": "ID of the accepted claim if accepted, null otherwise."
+        },
+        "merged_into": {
+          "oneOf": [
+            { "$ref": "#/$defs/id" },
+            { "type": "null" }
+          ],
+          "description": "ID of the target claim if merged, null otherwise."
+        },
+        "reject_reason": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ],
+          "description": "Reason for rejection if rejected, null otherwise."
+        }
+      },
+      "description": "Claim candidate entry with stable lineage and accept/reject outcome."
+    },
+    "relationCandidateEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_id",
+        "proposal_id",
+        "src_id",
+        "tgt_id",
+        "relation_type",
+        "strength",
+        "accepted"
+      ],
+      "properties": {
+        "candidate_id": {
+          "$ref": "#/$defs/id",
+          "description": "Stable candidate identifier."
+        },
+        "proposal_id": {
+          "$ref": "#/$defs/id",
+          "description": "Stable proposal lineage identifier."
+        },
+        "src_id": {
+          "$ref": "#/$defs/id",
+          "description": "Source claim ID."
+        },
+        "tgt_id": {
+          "$ref": "#/$defs/id",
+          "description": "Target claim ID."
+        },
+        "relation_type": {
+          "type": "string",
+          "description": "Semantic relation label emitted for the dataset."
+        },
+        "strength": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ],
+          "description": "Relation strength, null when unavailable."
+        },
+        "accepted": {
+          "type": "boolean",
+          "description": "Whether the relation proposal was admitted into the final phase1 graph."
+        },
+        "accepted_as": {
+          "oneOf": [
+            { "$ref": "#/$defs/id" },
+            { "type": "null" }
+          ],
+          "description": "ID of the accepted relation if accepted, null otherwise."
+        },
+        "reject_reason": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ],
+          "description": "Reason for rejection if rejected, null otherwise."
+        }
+      },
+      "description": "Relation candidate entry with stable lineage and accept/reject outcome."
+    },
+    "candidateLedger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claims_proposed",
+        "claims_accepted",
+        "claims_rejected",
+        "relations_proposed",
+        "relations_accepted",
+        "relations_rejected"
+      ],
+      "properties": {
+        "claims_proposed": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/claimCandidateEntry" },
+          "description": "All proposed claim candidates."
+        },
+        "claims_accepted": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/claimCandidateEntry" },
+          "description": "Accepted claim candidates."
+        },
+        "claims_rejected": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/claimCandidateEntry" },
+          "description": "Rejected claim candidates."
+        },
+        "relations_proposed": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/relationCandidateEntry" },
+          "description": "All proposed relation candidates."
+        },
+        "relations_accepted": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/relationCandidateEntry" },
+          "description": "Accepted relation candidates."
+        },
+        "relations_rejected": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/relationCandidateEntry" },
+          "description": "Rejected relation candidates."
+        }
+      },
+      "description": "Entry-rich candidate ledger with full accept/reject/merge lineage."
+    },
+    "phase1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claim_graph",
+        "structuring_workflow",
+        "candidate_ledger"
+      ],
+      "properties": {
+        "claim_graph": {
+          "$ref": "#/$defs/claimGraph",
+          "description": "Structured claim graph produced by phase 1."
+        },
+        "structuring_workflow": {
+          "$ref": "#/$defs/structuringWorkflow"
+        },
+        "candidate_ledger": {
+          "$ref": "#/$defs/candidateLedger"
+        }
+      }
+    },
+    "formalizationAttempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "output",
+        "sha256",
+        "assumptions"
+      ],
+      "properties": {
+        "output": {
+          "type": "string",
+          "description": "Formalization output text."
+        },
+        "sha256": {
+          "type": "string",
+          "description": "SHA-256 of the output for deterministic comparison."
+        },
+        "assumptions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Assumptions discovered during formalization."
+        },
+        "back_translation": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ],
+          "description": "Natural language back-translation of the formal output."
+        }
+      }
+    },
+    "divergence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "classification",
+        "primary_target_match",
+        "back_translation_match",
+        "code_sha_match",
+        "assumptions_only_in_a",
+        "assumptions_only_in_b"
+      ],
+      "properties": {
+        "classification": {
+          "type": "string",
+          "enum": ["match", "minor", "major", "critical"],
+          "description": "Divergence severity classification."
+        },
+        "primary_target_match": {
+          "type": "boolean"
+        },
+        "back_translation_match": {
+          "type": "boolean"
+        },
+        "code_sha_match": {
+          "type": "boolean"
+        },
+        "assumptions_only_in_a": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "assumptions_only_in_b": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "dualFormalization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "attempt_a",
+        "attempt_b",
+        "divergence"
+      ],
+      "properties": {
+        "attempt_a": {
+          "$ref": "#/$defs/formalizationAttempt"
+        },
+        "attempt_b": {
+          "$ref": "#/$defs/formalizationAttempt"
+        },
+        "divergence": {
+          "$ref": "#/$defs/divergence"
+        }
+      }
+    },
+    "claimAudit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "trust_frontier",
+        "model_health",
+        "intent_alignment",
+        "blocking_issues"
+      ],
+      "properties": {
+        "trust_frontier": {
+          "type": "object",
+          "description": "Trust frontier snapshot."
+        },
+        "model_health": {
+          "type": "object",
+          "description": "Model health snapshot."
+        },
+        "intent_alignment": {
+          "type": "object",
+          "description": "Intent alignment snapshot."
+        },
+        "blocking_issues": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of blocking issues preventing promotion."
+        }
+      }
+    },
+    "promotionTransition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "transition_id",
+        "gate_before",
+        "gate_after",
+        "actor_role",
+        "allowed",
+        "override",
+        "timestamp"
+      ],
+      "properties": {
+        "transition_id": {
+          "$ref": "#/$defs/id",
+          "description": "Stable transition identifier."
+        },
+        "gate_before": {
+          "type": "string",
+          "description": "Gate value before transition."
+        },
+        "gate_after": {
+          "type": "string",
+          "description": "Gate value after transition."
+        },
+        "actor_role": {
+          "type": "string",
+          "description": "Role of the actor who initiated the transition."
+        },
+        "allowed": {
+          "type": "boolean",
+          "description": "Whether the state machine permitted this transition."
+        },
+        "override": {
+          "type": "boolean",
+          "description": "Whether an override rule was applied."
+        },
+        "rationale": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ],
+          "description": "Textual rationale for the transition."
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "ISO 8601 timestamp of the transition."
+        }
+      }
+    },
+    "perClaimRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dual_formalization",
+        "build_results",
+        "verifier_results",
+        "audit",
+        "profile",
+        "promotion_transitions"
+      ],
+      "properties": {
+        "dual_formalization": {
+          "oneOf": [
+            { "$ref": "#/$defs/dualFormalization" },
+            { "type": "null" }
+          ],
+          "description": "Dual formalization record, null if not performed."
+        },
+        "build_results": {
+          "type": "object",
+          "description": "Build result record."
+        },
+        "verifier_results": {
+          "type": "object",
+          "description": "Verifier result record."
+        },
+        "audit": {
+          "oneOf": [
+            { "$ref": "#/$defs/claimAudit" },
+            { "type": "null" }
+          ],
+          "description": "Audit record, null if audit not performed."
+        },
+        "profile": {
+          "oneOf": [
+            { "type": "object" },
+            { "type": "null" }
+          ],
+          "description": "AssuranceProfile snapshot, null if not yet computed."
+        },
+        "promotion_transitions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/promotionTransition" },
+          "description": "Ordered list of promotion state machine transitions."
+        }
+      }
+    },
+    "phase2Flags": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "phase2_executed",
+        "certification_eligible"
+      ],
+      "properties": {
+        "phase2_executed": {
+          "type": "boolean",
+          "description": "Whether phase 2 was executed."
+        },
+        "formalization_required": {
+          "oneOf": [
+            { "type": "boolean" },
+            { "type": "null" }
+          ],
+          "description": "Whether formalization was required for this run."
+        },
+        "certification_eligible": {
+          "type": "boolean",
+          "description": "Whether the run is eligible for certification."
+        },
+        "unavailable_reason": {
+          "$ref": "#/$defs/unavailableReason",
+          "description": "Why phase 2 was not executed, if applicable."
+        }
+      }
+    },
+    "phase2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "per_claim",
+        "phase2_flags"
+      ],
+      "properties": {
+        "per_claim": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/perClaimRecord"
+          },
+          "description": "Map of claim_id to per-claim phase 2 record."
+        },
+        "phase2_flags": {
+          "$ref": "#/$defs/phase2Flags"
+        }
+      }
+    },
+    "evidenceRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "research_output"
+      ],
+      "properties": {
+        "research_output": {
+          "type": "object",
+          "description": "Research output record."
+        },
+        "updated_profile": {
+          "oneOf": [
+            { "type": "object" },
+            { "type": "null" }
+          ],
+          "description": "Updated AssuranceProfile after evidence integration, null if not recomputed."
+        }
+      }
+    },
+    "phase3Flags": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "phase3_executed"
+      ],
+      "properties": {
+        "phase3_executed": {
+          "type": "boolean",
+          "description": "Whether phase 3 was executed."
+        },
+        "unavailable_reason": {
+          "$ref": "#/$defs/unavailableReason",
+          "description": "Why phase 3 was not executed, if applicable."
+        }
+      }
+    },
+    "phase3": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence"
+      ],
+      "properties": {
+        "evidence": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/evidenceRecord"
+          },
+          "description": "Map of claim_id to evidence record."
+        },
+        "phase3_flags": {
+          "$ref": "#/$defs/phase3Flags",
+          "description": "Phase 3 execution flags."
+        }
+      }
+    },
+    "propagationPathEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claim_id",
+        "status_before",
+        "status_after",
+        "reason"
+      ],
+      "properties": {
+        "claim_id": {
+          "$ref": "#/$defs/id"
+        },
+        "status_before": {
+          "type": "string"
+        },
+        "status_after": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string",
+          "description": "Which edge or rule caused this propagation step."
+        }
+      }
+    },
+    "propagationTrace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "trigger_claim_id",
+        "path"
+      ],
+      "properties": {
+        "trigger_claim_id": {
+          "$ref": "#/$defs/id",
+          "description": "The node whose status change triggered propagation."
+        },
+        "trigger_event_id": {
+          "oneOf": [
+            { "$ref": "#/$defs/id" },
+            { "type": "null" }
+          ],
+          "description": "The originating event, if available."
+        },
+        "path": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/propagationPathEntry" },
+          "description": "Ordered propagation path."
+        }
+      }
+    },
+    "vectorScores": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "trust_base_integrity",
+        "intent_alignment",
+        "evidence_support",
+        "coverage",
+        "robustness"
+      ],
+      "properties": {
+        "trust_base_integrity": { "type": "number" },
+        "intent_alignment": { "type": "number" },
+        "evidence_support": { "type": "number" },
+        "coverage": { "type": "number" },
+        "robustness": { "type": "number" }
+      }
+    },
+    "vectorScoreDelta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claim_id",
+        "before",
+        "after"
+      ],
+      "properties": {
+        "claim_id": {
+          "$ref": "#/$defs/id"
+        },
+        "event_id": {
+          "oneOf": [
+            { "$ref": "#/$defs/id" },
+            { "type": "null" }
+          ],
+          "description": "The originating event, if available."
+        },
+        "before": {
+          "$ref": "#/$defs/vectorScores"
+        },
+        "after": {
+          "$ref": "#/$defs/vectorScores"
+        },
+        "gate_before": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ]
+        },
+        "gate_after": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "soundnessScore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "score",
+        "method",
+        "notes"
+      ],
+      "properties": {
+        "score": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "method": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "traceResults": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "forward_traces",
+        "backward_traces",
+        "gap_analysis",
+        "soundness"
+      ],
+      "properties": {
+        "forward_traces": {
+          "type": "object",
+          "description": "Forward trace records keyed by claim_id."
+        },
+        "forward_traces_unavailable_reason": {
+          "$ref": "#/$defs/unavailableReason",
+          "description": "Required when forward_traces is empty."
+        },
+        "backward_traces": {
+          "type": "object",
+          "description": "Backward trace records keyed by claim_id."
+        },
+        "backward_traces_unavailable_reason": {
+          "$ref": "#/$defs/unavailableReason",
+          "description": "Required when backward_traces is empty."
+        },
+        "gap_analysis": {
+          "type": "object",
+          "description": "Gap analysis results."
+        },
+        "gap_analysis_unavailable_reason": {
+          "$ref": "#/$defs/unavailableReason",
+          "description": "Required when gap_analysis is empty."
+        },
+        "soundness": {
+          "$ref": "#/$defs/soundnessScore"
+        },
+        "propagation_traces": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/propagationTrace" },
+          "description": "Propagation trace records showing how status changes cascade."
+        },
+        "propagation_traces_unavailable_reason": {
+          "$ref": "#/$defs/unavailableReason",
+          "description": "Required when propagation_traces is empty."
+        },
+        "vector_score_deltas": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/vectorScoreDelta" },
+          "description": "Vector score delta records tracking score changes over time."
+        },
+        "vector_score_deltas_unavailable_reason": {
+          "$ref": "#/$defs/unavailableReason",
+          "description": "Required when vector_score_deltas is empty."
+        }
+      }
+    }
+  }
+}

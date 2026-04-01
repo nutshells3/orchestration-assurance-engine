@@ -1,0 +1,13 @@
+{
+  "session_name": "Fixture_Definitional",
+  "cleanup_on_close": true,
+  "theories": [
+    {
+      "theory_name": "Definitional_Model",
+      "imports": [
+        "Main"
+      ],
+      "body": "definition bounded where \"bounded = True\"\n\nlemma boundedI: \"bounded\"\n  unfolding bounded_def\n  by simp"
+    }
+  ]
+}
